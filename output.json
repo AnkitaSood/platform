@@ -1,0 +1,2460 @@
+[
+  {
+    "module": "component",
+    "api": "PushPipe",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class PushPipe<S> implements PipeTransform, OnDestroy {\r\ntransform<T>(\r\n    potentialObservable: ObservableInput<T> | null | undefined\r\n  ): T | null | undefined;\r\nngOnDestroy(): void;\r\n}"
+    ]
+  },
+  {
+    "module": "component",
+    "api": "LetDirective",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class LetDirective<U> implements OnDestroy {\r\nstatic ngTemplateContextGuard<U>(\r\n    dir: LetDirective<U>,\r\n    ctx: unknown | null | undefined\r\n  ): ctx is LetViewContext<U>;\r\ncreateEmbeddedView();\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "component",
+    "api": "ReactiveComponentModule",
+    "kind": "ClassDeclaration",
+    "signatures": ["class ReactiveComponentModule { }"]
+  },
+  {
+    "module": "component-store",
+    "api": "EffectReturnFn",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EffectReturnFn<T> {}"]
+  },
+  {
+    "module": "component-store",
+    "api": "SelectConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface SelectConfig {\r\ndebounce?: boolean;\r\n}"]
+  },
+  {
+    "module": "component-store",
+    "api": "initialStateToken",
+    "kind": "VariableDeclaration",
+    "signatures": ["const initialStateToken: InjectionToken<unknown>"]
+  },
+  {
+    "module": "component-store",
+    "api": "ComponentStore",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ComponentStore<T extends object> implements OnDestroy {\r\nngOnDestroy();\r\nupdater<V>(\r\n    updaterFn: (state: T, value: V) => T\r\n  ): unknown extends V ? () => void : (t: V | Observable<V>) => Subscription;\r\nsetState(stateOrUpdaterFn: T | ((state: T) => T)): void;\r\nselect<\r\n    O extends Array<Observable<unknown> | SelectConfig | ProjectorFn>,\r\n    R,\r\n    ProjectorFn = (...a: unknown[]) => R\r\n  >(...args: O): Observable<R>;\r\neffect<V, R = unknown>(\r\n    generator: (origin$: Observable<V>) => Observable<R>\r\n  ): EffectReturnFn<V>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityActionFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityActionFactory {\r\ncreate<P = any>(\r\n    nameOrPayload: EntityActionPayload<P> | string,\r\n    entityOp?: EntityOp,\r\n    data?: P,\r\n    options?: EntityActionOptions\r\n  ): EntityAction<P>;\r\ncreateFromAction<P = any>(\r\n    from: EntityAction,\r\n    newProperties: Partial<EntityActionPayload<P>>\r\n  ): EntityAction<P>;\r\nformatActionType(op: string, tag: string);\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityActionGuard",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityActionGuard<T> {\r\nmustBeEntity(action: EntityAction<T>): T;\r\nmustBeEntities(action: EntityAction<T[]>): T[];\r\nmustBeKey(action: EntityAction<string | number>): string | number | never;\r\nmustBeKeys(action: EntityAction<(string | number)[]>): (string | number)[];\r\nmustBeUpdate(action: EntityAction<Update<T>>): Update<T>;\r\nmustBeUpdates(action: EntityAction<Update<T>[]>): Update<T>[];\r\nmustBeUpdateResponse(\r\n    action: EntityAction<UpdateResponseData<T>>\r\n  ): UpdateResponseData<T>;\r\nmustBeUpdateResponses(\r\n    action: EntityAction<UpdateResponseData<T>[]>\r\n  ): UpdateResponseData<T>[];\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ofEntityOp",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "ofEntityOp<T extends EntityAction>( allowedOps: string[] | EntityOp[] ): OperatorFunction<EntityAction, T>;",
+      "ofEntityOp<T extends EntityAction>( ...allowedOps: (string | EntityOp)[] ): OperatorFunction<EntityAction, T>;",
+      "ofEntityOp<T extends EntityAction>( ...allowedEntityOps: any[] ): OperatorFunction<EntityAction, T>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ofEntityType",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "ofEntityType<T extends EntityAction>( allowedEntityNames?: string[] ): OperatorFunction<EntityAction, T>;",
+      "ofEntityType<T extends EntityAction>( ...allowedEntityNames: string[] ): OperatorFunction<EntityAction, T>;",
+      "ofEntityType<T extends EntityAction>( ...allowedEntityNames: any[] ): OperatorFunction<EntityAction, T>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityAction",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityAction<P = any> {\r\nreadonly type: string;\r\nreadonly payload: EntityActionPayload<P>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityActionOptions",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityActionOptions {\r\nreadonly correlationId?: any;\r\nreadonly isOptimistic?: boolean;\r\nreadonly mergeStrategy?: MergeStrategy;\r\nreadonly tag?: string;\r\nerror?: Error;\r\nskip?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityActionPayload",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityActionPayload<P = any> {\r\nreadonly entityName: string;\r\nreadonly entityOp: EntityOp;\r\nreadonly data?: P;\r\n\r\n// inherited from EntityActionOptions\r\nreadonly correlationId?: any;\r\nreadonly isOptimistic?: boolean;\r\nreadonly mergeStrategy?: MergeStrategy;\r\nreadonly tag?: string;\r\nerror?: Error;\r\nskip?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheAction",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export enum EntityCacheAction {\r\n  CLEAR_COLLECTIONS = '@ngrx/data/entity-cache/clear-collections',\r\n  LOAD_COLLECTIONS = '@ngrx/data/entity-cache/load-collections',\r\n  MERGE_QUERY_SET = '@ngrx/data/entity-cache/merge-query-set',\r\n  SET_ENTITY_CACHE = '@ngrx/data/entity-cache/set-cache',\r\n\r\n  SAVE_ENTITIES = '@ngrx/data/entity-cache/save-entities',\r\n  SAVE_ENTITIES_CANCEL = '@ngrx/data/entity-cache/save-entities-cancel',\r\n  SAVE_ENTITIES_CANCELED = '@ngrx/data/entity-cache/save-entities-canceled',\r\n  SAVE_ENTITIES_ERROR = '@ngrx/data/entity-cache/save-entities-error',\r\n  SAVE_ENTITIES_SUCCESS = '@ngrx/data/entity-cache/save-entities-success',\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheQuerySet",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityCacheQuerySet {}"]
+  },
+  {
+    "module": "data",
+    "api": "ClearCollections",
+    "kind": "ClassDeclaration",
+    "signatures": ["class ClearCollections implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "LoadCollections",
+    "kind": "ClassDeclaration",
+    "signatures": ["class LoadCollections implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "MergeQuerySet",
+    "kind": "ClassDeclaration",
+    "signatures": ["class MergeQuerySet implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "SetEntityCache",
+    "kind": "ClassDeclaration",
+    "signatures": ["class SetEntityCache implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "SaveEntities",
+    "kind": "ClassDeclaration",
+    "signatures": ["class SaveEntities implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "SaveEntitiesCancel",
+    "kind": "ClassDeclaration",
+    "signatures": ["class SaveEntitiesCancel implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "SaveEntitiesCanceled",
+    "kind": "ClassDeclaration",
+    "signatures": ["class SaveEntitiesCanceled implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "SaveEntitiesError",
+    "kind": "ClassDeclaration",
+    "signatures": ["class SaveEntitiesError { }"]
+  },
+  {
+    "module": "data",
+    "api": "SaveEntitiesSuccess",
+    "kind": "ClassDeclaration",
+    "signatures": ["class SaveEntitiesSuccess implements Action { }"]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetOperation",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export enum ChangeSetOperation {\r\n  Add = 'Add',\r\n  Delete = 'Delete',\r\n  Update = 'Update',\r\n  Upsert = 'Upsert',\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetAdd",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ChangeSetAdd<T = any> {\r\nop: ChangeSetOperation.Add;\r\nentityName: string;\r\nentities: T[];\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetDelete",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ChangeSetDelete {\r\nop: ChangeSetOperation.Delete;\r\nentityName: string;\r\nentities: string[] | number[];\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetUpdate",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ChangeSetUpdate<T = any> {\r\nop: ChangeSetOperation.Update;\r\nentityName: string;\r\nentities: Update<T>[];\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetUpsert",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ChangeSetUpsert<T = any> {\r\nop: ChangeSetOperation.Upsert;\r\nentityName: string;\r\nentities: T[];\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetItem",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type ChangeSetItem =\r\n  | ChangeSetAdd\r\n  | ChangeSetDelete\r\n  | ChangeSetUpdate\r\n  | ChangeSetUpsert;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSet",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ChangeSet<T = any> {\r\nchanges: ChangeSetItem[];\r\nextras?: T;\r\ntag?: string;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeSetItemFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ChangeSetItemFactory {\r\nadd<T>(entityName: string, entities: T | T[]): ChangeSetAdd<T>;\r\ndelete(\r\n    entityName: string,\r\n    keys: number | number[] | string | string[]\r\n  ): ChangeSetDelete;\r\nupdate<T extends { id: string | number }>(\r\n    entityName: string,\r\n    updates: Update<T> | Update<T>[]\r\n  ): ChangeSetUpdate<T>;\r\nupsert<T>(entityName: string, entities: T | T[]): ChangeSetUpsert<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "changeSetItemFactory",
+    "kind": "VariableDeclaration",
+    "signatures": ["const changeSetItemFactory: ChangeSetItemFactory"]
+  },
+  {
+    "module": "data",
+    "api": "excludeEmptyChangeSetItems",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "excludeEmptyChangeSetItems(changeSet: ChangeSet): ChangeSet;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityOp",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export enum EntityOp {\r\n  // Persistance operations\r\n  CANCEL_PERSIST = '@ngrx/data/cancel-persist',\r\n  CANCELED_PERSIST = '@ngrx/data/canceled-persist',\r\n\r\n  QUERY_ALL = '@ngrx/data/query-all',\r\n  QUERY_ALL_SUCCESS = '@ngrx/data/query-all/success',\r\n  QUERY_ALL_ERROR = '@ngrx/data/query-all/error',\r\n\r\n  QUERY_LOAD = '@ngrx/data/query-load',\r\n  QUERY_LOAD_SUCCESS = '@ngrx/data/query-load/success',\r\n  QUERY_LOAD_ERROR = '@ngrx/data/query-load/error',\r\n\r\n  QUERY_MANY = '@ngrx/data/query-many',\r\n  QUERY_MANY_SUCCESS = '@ngrx/data/query-many/success',\r\n  QUERY_MANY_ERROR = '@ngrx/data/query-many/error',\r\n\r\n  QUERY_BY_KEY = '@ngrx/data/query-by-key',\r\n  QUERY_BY_KEY_SUCCESS = '@ngrx/data/query-by-key/success',\r\n  QUERY_BY_KEY_ERROR = '@ngrx/data/query-by-key/error',\r\n\r\n  SAVE_ADD_MANY = '@ngrx/data/save/add-many',\r\n  SAVE_ADD_MANY_ERROR = '@ngrx/data/save/add-many/error',\r\n  SAVE_ADD_MANY_SUCCESS = '@ngrx/data/save/add-many/success',\r\n\r\n  SAVE_ADD_ONE = '@ngrx/data/save/add-one',\r\n  SAVE_ADD_ONE_ERROR = '@ngrx/data/save/add-one/error',\r\n  SAVE_ADD_ONE_SUCCESS = '@ngrx/data/save/add-one/success',\r\n\r\n  SAVE_DELETE_MANY = '@ngrx/data/save/delete-many',\r\n  SAVE_DELETE_MANY_SUCCESS = '@ngrx/data/save/delete-many/success',\r\n  SAVE_DELETE_MANY_ERROR = '@ngrx/data/save/delete-many/error',\r\n\r\n  SAVE_DELETE_ONE = '@ngrx/data/save/delete-one',\r\n  SAVE_DELETE_ONE_SUCCESS = '@ngrx/data/save/delete-one/success',\r\n  SAVE_DELETE_ONE_ERROR = '@ngrx/data/save/delete-one/error',\r\n\r\n  SAVE_UPDATE_MANY = '@ngrx/data/save/update-many',\r\n  SAVE_UPDATE_MANY_SUCCESS = '@ngrx/data/save/update-many/success',\r\n  SAVE_UPDATE_MANY_ERROR = '@ngrx/data/save/update-many/error',\r\n\r\n  SAVE_UPDATE_ONE = '@ngrx/data/save/update-one',\r\n  SAVE_UPDATE_ONE_SUCCESS = '@ngrx/data/save/update-one/success',\r\n  SAVE_UPDATE_ONE_ERROR = '@ngrx/data/save/update-one/error',\r\n\r\n  // Use only if the server supports upsert;\r\n  SAVE_UPSERT_MANY = '@ngrx/data/save/upsert-many',\r\n  SAVE_UPSERT_MANY_SUCCESS = '@ngrx/data/save/upsert-many/success',\r\n  SAVE_UPSERT_MANY_ERROR = '@ngrx/data/save/upsert-many/error',\r\n\r\n  // Use only if the server supports upsert;\r\n  SAVE_UPSERT_ONE = '@ngrx/data/save/upsert-one',\r\n  SAVE_UPSERT_ONE_SUCCESS = '@ngrx/data/save/upsert-one/success',\r\n  SAVE_UPSERT_ONE_ERROR = '@ngrx/data/save/upsert-one/error',\r\n\r\n  // Cache operations\r\n  ADD_ALL = '@ngrx/data/add-all',\r\n  ADD_MANY = '@ngrx/data/add-many',\r\n  ADD_ONE = '@ngrx/data/add-one',\r\n  REMOVE_ALL = '@ngrx/data/remove-all',\r\n  REMOVE_MANY = '@ngrx/data/remove-many',\r\n  REMOVE_ONE = '@ngrx/data/remove-one',\r\n  UPDATE_MANY = '@ngrx/data/update-many',\r\n  UPDATE_ONE = '@ngrx/data/update-one',\r\n  UPSERT_MANY = '@ngrx/data/upsert-many',\r\n  UPSERT_ONE = '@ngrx/data/upsert-one',\r\n\r\n  COMMIT_ALL = '@ngrx/data/commit-all',\r\n  COMMIT_MANY = '@ngrx/data/commit-many',\r\n  COMMIT_ONE = '@ngrx/data/commit-one',\r\n  UNDO_ALL = '@ngrx/data/undo-all',\r\n  UNDO_MANY = '@ngrx/data/undo-many',\r\n  UNDO_ONE = '@ngrx/data/undo-one',\r\n\r\n  SET_CHANGE_STATE = '@ngrx/data/set-change-state',\r\n  SET_COLLECTION = '@ngrx/data/set-collection',\r\n  SET_FILTER = '@ngrx/data/set-filter',\r\n  SET_LOADED = '@ngrx/data/set-loaded',\r\n  SET_LOADING = '@ngrx/data/set-loading',\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "OP_SUCCESS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const OP_SUCCESS: \"/success\""]
+  },
+  {
+    "module": "data",
+    "api": "OP_ERROR",
+    "kind": "VariableDeclaration",
+    "signatures": ["const OP_ERROR: \"/error\""]
+  },
+  {
+    "module": "data",
+    "api": "makeErrorOp",
+    "kind": "FunctionDeclaration",
+    "signatures": ["makeErrorOp(op: EntityOp): EntityOp;"]
+  },
+  {
+    "module": "data",
+    "api": "makeSuccessOp",
+    "kind": "FunctionDeclaration",
+    "signatures": ["makeSuccessOp(op: EntityOp): EntityOp;"]
+  },
+  {
+    "module": "data",
+    "api": "MergeStrategy",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export enum MergeStrategy {\r\n  /**\r\n   * Update the collection entities and ignore all change tracking for this operation.\r\n   * Each entity's `changeState` is untouched.\r\n   */\r\n  IgnoreChanges,\r\n  /**\r\n   * Updates current values for unchanged entities.\r\n   * For each changed entity it preserves the current value and overwrites the `originalValue` with the merge entity.\r\n   * This is the query-success default.\r\n   */\r\n  PreserveChanges,\r\n  /**\r\n   * Replace the current collection entities.\r\n   * For each merged entity it discards the `changeState` and sets the `changeType` to \"unchanged\".\r\n   * This is the save-success default.\r\n   */\r\n  OverwriteChanges,\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "UpdateResponseData",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface UpdateResponseData<T> {\r\nid: number | string;\r\nchanges: Partial<T>;\r\nchanged?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "DataServiceError",
+    "kind": "ClassDeclaration",
+    "signatures": ["class DataServiceError { }"]
+  },
+  {
+    "module": "data",
+    "api": "EntityActionDataServiceError",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityActionDataServiceError {\r\nerror: DataServiceError;\r\noriginalAction: EntityAction;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "DefaultDataServiceConfig",
+    "kind": "ClassDeclaration",
+    "signatures": ["class DefaultDataServiceConfig { }"]
+  },
+  {
+    "module": "data",
+    "api": "DefaultDataService",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultDataService<T> implements EntityCollectionDataService<T> {\r\nadd(entity: T): Observable<T>;\r\ndelete(key: number | string): Observable<number | string>;\r\ngetAll(): Observable<T[]>;\r\ngetById(key: number | string): Observable<T>;\r\ngetWithQuery(queryParams: QueryParams | string): Observable<T[]>;\r\nupdate(update: Update<T>): Observable<T>;\r\nupsert(entity: T): Observable<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "DefaultDataServiceFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultDataServiceFactory {\r\ncreate<T>(entityName: string): EntityCollectionDataService<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheDataService",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCacheDataService {\r\nsaveEntities(changeSet: ChangeSet, url: string): Observable<ChangeSet>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDataService",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityDataService {\r\ngetService<T>(entityName: string): EntityCollectionDataService<T>;\r\nregisterService<T>(\r\n    entityName: string,\r\n    service: EntityCollectionDataService<T>\r\n  );\r\nregisterServices(services: {\r\n    [name: string]: EntityCollectionDataService<any>;\r\n  });\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityHttpResourceUrls",
+    "kind": "ClassDeclaration",
+    "signatures": ["class EntityHttpResourceUrls { }"]
+  },
+  {
+    "module": "data",
+    "api": "HttpResourceUrls",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface HttpResourceUrls {\r\nentityResourceUrl: string;\r\ncollectionResourceUrl: string;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "HttpUrlGenerator",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class HttpUrlGenerator {\r\nabstract entityResource(entityName: string, root: string): string;\r\nabstract collectionResource(entityName: string, root: string): string;\r\nabstract registerHttpResourceUrls(\r\n    entityHttpResourceUrls?: EntityHttpResourceUrls\r\n  ): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "DefaultHttpUrlGenerator",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultHttpUrlGenerator implements HttpUrlGenerator {\r\nentityResource(entityName: string, root: string): string;\r\ncollectionResource(entityName: string, root: string): string;\r\nregisterHttpResourceUrls(\r\n    entityHttpResourceUrls: EntityHttpResourceUrls\r\n  ): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "normalizeRoot",
+    "kind": "FunctionDeclaration",
+    "signatures": ["normalizeRoot(root: string);"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionDataService",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityCollectionDataService<T> {\r\nreadonly name: string;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "HttpMethods",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type HttpMethods = 'DELETE' | 'GET' | 'POST' | 'PUT';"]
+  },
+  {
+    "module": "data",
+    "api": "RequestData",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface RequestData {\r\nmethod: HttpMethods;\r\nurl: string;\r\ndata?: any;\r\noptions?: any;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "QueryParams",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface QueryParams {}"]
+  },
+  {
+    "module": "data",
+    "api": "PersistenceResultHandler",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class PersistenceResultHandler {\r\nabstract handleSuccess(originalAction: EntityAction): (data: any) => Action;\r\nabstract handleError(\r\n    originalAction: EntityAction\r\n  ): (\r\n    error: DataServiceError | Error\r\n  ) => EntityAction<EntityActionDataServiceError>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "DefaultPersistenceResultHandler",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultPersistenceResultHandler implements PersistenceResultHandler {\r\nhandleSuccess(originalAction: EntityAction): (data: any) => Action;\r\nhandleError(\r\n    originalAction: EntityAction\r\n  ): (\r\n    error: DataServiceError | Error\r\n  ) => EntityAction<EntityActionDataServiceError>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheDispatcher",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCacheDispatcher {\r\ndispatch(action: Action): Action;\r\ncancelSaveEntities(\r\n    correlationId: any,\r\n    reason?: string,\r\n    entityNames?: string[],\r\n    tag?: string\r\n  ): void;\r\nclearCollections(collections?: string[], tag?: string);\r\nloadCollections(collections: EntityCacheQuerySet, tag?: string);\r\nmergeQuerySet(\r\n    querySet: EntityCacheQuerySet,\r\n    mergeStrategy?: MergeStrategy,\r\n    tag?: string\r\n  );\r\nsetEntityCache(cache: EntityCache, tag?: string);\r\nsaveEntities(\r\n    changes: ChangeSetItem[] | ChangeSet,\r\n    url: string,\r\n    options?: EntityActionOptions\r\n  ): Observable<ChangeSet>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityServerCommands",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityServerCommands<T> {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheCommands",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityCacheCommands<T> {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCommands",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityCommands<T> {\r\n\r\n// inherited from EntityServerCommands\r\n\r\n// inherited from EntityCacheCommands\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDispatcherBase",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityDispatcherBase<T> implements EntityDispatcher<T> {\r\ncreateEntityAction<P = any>(\r\n    entityOp: EntityOp,\r\n    data?: P,\r\n    options?: EntityActionOptions\r\n  ): EntityAction<P>;\r\ncreateAndDispatch<P = any>(\r\n    op: EntityOp,\r\n    data?: P,\r\n    options?: EntityActionOptions\r\n  ): EntityAction<P>;\r\ndispatch(action: Action): Action;\r\nadd(entity: T, options?: EntityActionOptions): Observable<T>;\r\ncancel(\r\n    correlationId: any,\r\n    reason?: string,\r\n    options?: EntityActionOptions\r\n  ): void;\r\ndelete(\r\n    arg: number | string | T,\r\n    options?: EntityActionOptions\r\n  ): Observable<number | string>;\r\ngetAll(options?: EntityActionOptions): Observable<T[]>;\r\ngetByKey(key: any, options?: EntityActionOptions): Observable<T>;\r\ngetWithQuery(\r\n    queryParams: QueryParams | string,\r\n    options?: EntityActionOptions\r\n  ): Observable<T[]>;\r\nload(options?: EntityActionOptions): Observable<T[]>;\r\nupdate(entity: Partial<T>, options?: EntityActionOptions): Observable<T>;\r\nupsert(entity: T, options?: EntityActionOptions): Observable<T>;\r\naddAllToCache(entities: T[], options?: EntityActionOptions): void;\r\naddOneToCache(entity: T, options?: EntityActionOptions): void;\r\naddManyToCache(entities: T[], options?: EntityActionOptions): void;\r\nclearCache(options?: EntityActionOptions): void;\r\nremoveOneFromCache(\r\n    arg: (number | string) | T,\r\n    options?: EntityActionOptions\r\n  ): void;\r\nremoveManyFromCache(\r\n    args: (number | string)[] | T[],\r\n    options?: EntityActionOptions\r\n  ): void;\r\nupdateOneInCache(entity: Partial<T>, options?: EntityActionOptions): void;\r\nupdateManyInCache(\r\n    entities: Partial<T>[],\r\n    options?: EntityActionOptions\r\n  ): void;\r\nupsertOneInCache(entity: Partial<T>, options?: EntityActionOptions): void;\r\nupsertManyInCache(\r\n    entities: Partial<T>[],\r\n    options?: EntityActionOptions\r\n  ): void;\r\nsetFilter(pattern: any): void;\r\nsetLoaded(isLoaded: boolean): void;\r\nsetLoading(isLoading: boolean): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDispatcherDefaultOptions",
+    "kind": "ClassDeclaration",
+    "signatures": ["class EntityDispatcherDefaultOptions { }"]
+  },
+  {
+    "module": "data",
+    "api": "EntityDispatcherFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityDispatcherFactory implements OnDestroy {\r\ncreate<T>(\r\n    /** Name of the entity type */\r\n    entityName: string,\r\n    /**\r\n     * Function that returns the primary key for an entity `T`.\r\n     * Usually acquired from `EntityDefinition` metadata.\r\n     */\r\n    selectId: IdSelector<T> = defaultSelectId,\r\n    /** Defaults for options that influence dispatcher behavior such as whether\r\n     * `add()` is optimistic or pessimistic;\r\n     */\r\n    defaultOptions: Partial<EntityDispatcherDefaultOptions> = {}\r\n  ): EntityDispatcher<T>;\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDispatcher",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityDispatcher<T> {\r\nreadonly entityName: string;\r\nreadonly guard: EntityActionGuard<T>;\r\nreadonly selectId: IdSelector<T>;\r\nreadonly store: Store<EntityCache>;\r\n\r\n// inherited from EntityCommands\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "PersistanceCanceled",
+    "kind": "ClassDeclaration",
+    "signatures": ["class PersistanceCanceled { }"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheEffects",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCacheEffects {\r\nsaveEntities(action: SaveEntities): Observable<Action>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "persistOps",
+    "kind": "VariableDeclaration",
+    "signatures": ["const persistOps: EntityOp[]"]
+  },
+  {
+    "module": "data",
+    "api": "EntityEffects",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityEffects {\r\npersist(action: EntityAction): Observable<Action>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDefinitions",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityDefinitions {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityDefinitionService",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityDefinitionService {\r\ngetDefinition<T>(\r\n    entityName: string,\r\n    shouldThrow = true\r\n  ): EntityDefinition<T>;\r\nregisterMetadata(metadata: EntityMetadata);\r\nregisterMetadataMap(metadataMap: EntityMetadataMap = {});\r\nregisterDefinition<T>(definition: EntityDefinition<T>);\r\nregisterDefinitions(definitions: EntityDefinitions);\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDefinition",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityDefinition<T = any> {\r\nentityName: string;\r\nentityAdapter: EntityAdapter<T>;\r\nentityDispatcherOptions?: Partial<EntityDispatcherDefaultOptions>;\r\ninitialState: EntityCollection<T>;\r\nmetadata: EntityMetadata<T>;\r\nnoChangeTracking: boolean;\r\nselectId: IdSelector<T>;\r\nsortComparer: false | Comparer<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "createEntityDefinition",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createEntityDefinition<T, S extends object>( metadata: EntityMetadata<T, S> ): EntityDefinition<T>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityFilterFn",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type EntityFilterFn<T> = (entities: T[], pattern?: any) => T[];"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "PropsFilterFnFactory",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "PropsFilterFnFactory<T = any>( props: (keyof T)[] = [] ): EntityFilterFn<T>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ENTITY_METADATA_TOKEN",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const ENTITY_METADATA_TOKEN: InjectionToken<EntityMetadataMap>"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityMetadata",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityMetadata<T = any, S extends object = {}> {\r\nentityName: string;\r\nentityDispatcherOptions?: Partial<EntityDispatcherDefaultOptions>;\r\nfilterFn?: EntityFilterFn<T>;\r\nnoChangeTracking?: boolean;\r\nselectId?: IdSelector<T>;\r\nsortComparer?: false | Comparer<T>;\r\nadditionalCollectionState?: S;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityMetadataMap",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityMetadataMap {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionServiceBase",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionServiceBase<T, S$ extends EntitySelectors$<T> = EntitySelectors$<T>> implements EntityCollectionService<T> {\r\ncreateEntityAction<P = any>(\r\n    op: EntityOp,\r\n    data?: P,\r\n    options?: EntityActionOptions\r\n  ): EntityAction<P>;\r\ncreateAndDispatch<P = any>(\r\n    op: EntityOp,\r\n    data?: P,\r\n    options?: EntityActionOptions\r\n  ): EntityAction<P>;\r\ndispatch(action: Action): Action;\r\nadd(entity: T, options?: EntityActionOptions): Observable<T>;\r\ncancel(\r\n    correlationId: any,\r\n    reason?: string,\r\n    options?: EntityActionOptions\r\n  ): void;\r\ndelete(\r\n    arg: number | string | T,\r\n    options?: EntityActionOptions\r\n  ): Observable<number | string>;\r\ngetAll(options?: EntityActionOptions): Observable<T[]>;\r\ngetByKey(key: any, options?: EntityActionOptions): Observable<T>;\r\ngetWithQuery(\r\n    queryParams: QueryParams | string,\r\n    options?: EntityActionOptions\r\n  ): Observable<T[]>;\r\nload(options?: EntityActionOptions): Observable<T[]>;\r\nupdate(entity: Partial<T>, options?: EntityActionOptions): Observable<T>;\r\nupsert(entity: T, options?: EntityActionOptions): Observable<T>;\r\naddAllToCache(entities: T[], options?: EntityActionOptions): void;\r\naddOneToCache(entity: T, options?: EntityActionOptions): void;\r\naddManyToCache(entities: T[], options?: EntityActionOptions): void;\r\nclearCache(): void;\r\nremoveOneFromCache(\r\n    arg: (number | string) | T,\r\n    options?: EntityActionOptions\r\n  ): void;\r\nremoveManyFromCache(\r\n    args: (number | string)[] | T[],\r\n    options?: EntityActionOptions\r\n  ): void;\r\nupdateOneInCache(entity: Partial<T>, options?: EntityActionOptions): void;\r\nupdateManyInCache(\r\n    entities: Partial<T>[],\r\n    options?: EntityActionOptions\r\n  ): void;\r\nupsertOneInCache(entity: Partial<T>, options?: EntityActionOptions): void;\r\nupsertManyInCache(\r\n    entities: Partial<T>[],\r\n    options?: EntityActionOptions\r\n  ): void;\r\nsetFilter(pattern: any): void;\r\nsetLoaded(isLoaded: boolean): void;\r\nsetLoading(isLoading: boolean): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionServiceElements",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityCollectionServiceElements<T, S$ extends EntitySelectors$<T> = EntitySelectors$<T>> {\r\nreadonly dispatcher: EntityDispatcher<T>;\r\nreadonly entityName: string;\r\nreadonly selectors: EntitySelectors<T>;\r\nreadonly selectors$: S$;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionServiceElementsFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionServiceElementsFactory {\r\ncreate<T, S$ extends EntitySelectors$<T> = EntitySelectors$<T>>(\r\n    entityName: string\r\n  ): EntityCollectionServiceElements<T, S$>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionServiceFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionServiceFactory {\r\ncreate<T, S$ extends EntitySelectors$<T> = EntitySelectors$<T>>(\r\n    entityName: string\r\n  ): EntityCollectionService<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionService",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityCollectionService<T> {\r\nreadonly dispatcher: EntityDispatcher<T>;\r\nreadonly entityName: string;\r\nreadonly selectors: EntitySelectors<T>;\r\nreadonly selectors$: EntitySelectors$<T>;\r\n\r\n// inherited from EntityCommands\r\n\r\n// inherited from EntitySelectors$\r\nreadonly entityName: string;\r\nreadonly collection$: Observable<EntityCollection> | Store<EntityCollection>;\r\nreadonly count$: Observable<number> | Store<number>;\r\nreadonly entities$: Observable<T[]> | Store<T[]>;\r\nreadonly entityActions$: Observable<EntityAction>;\r\nreadonly entityMap$: Observable<Dictionary<T>> | Store<Dictionary<T>>;\r\nreadonly errors$: Observable<EntityAction>;\r\nreadonly filter$: Observable<string> | Store<string>;\r\nreadonly filteredEntities$: Observable<T[]> | Store<T[]>;\r\nreadonly keys$: Observable<string[] | number[]> | Store<string[] | number[]>;\r\nreadonly loaded$: Observable<boolean> | Store<boolean>;\r\nreadonly loading$: Observable<boolean> | Store<boolean>;\r\nreadonly changeState$: | Observable<ChangeStateMap<T>> | Store<ChangeStateMap<T>>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityServicesBase",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityServicesBase implements EntityServices {\r\ndispatch(action: Action);\r\ngetEntityCollectionService<\r\n    T,\r\n    S$ extends EntitySelectors$<T> = EntitySelectors$<T>\r\n  >(entityName: string): EntityCollectionService<T>;\r\nregisterEntityCollectionService<T>(\r\n    service: EntityCollectionService<T>,\r\n    serviceName?: string\r\n  );\r\nregisterEntityCollectionServices(\r\n    entityCollectionServices:\r\n      | EntityCollectionServiceMap\r\n      | EntityCollectionService<any>[]\r\n  ): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityServicesElements",
+    "kind": "ClassDeclaration",
+    "signatures": ["class EntityServicesElements { }"]
+  },
+  {
+    "module": "data",
+    "api": "EntityServices",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityServices {\r\nabstract dispatch(action: Action): void;\r\nabstract getEntityCollectionService<T = any>(\r\n    entityName: string\r\n  ): EntityCollectionService<T>;\r\nabstract registerEntityCollectionService<T>(\r\n    service: EntityCollectionService<T>\r\n  ): void;\r\nabstract registerEntityCollectionServices(\r\n    entityCollectionServices: EntityCollectionService<any>[]\r\n  ): void;\r\nabstract registerEntityCollectionServices(\r\n    // tslint:disable-next-line:unified-signatures\r\n    entityCollectionServiceMap: EntityCollectionServiceMap\r\n  ): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionServiceMap",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityCollectionServiceMap {}"]
+  },
+  {
+    "module": "data",
+    "api": "ENTITY_CACHE_NAME",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ENTITY_CACHE_NAME: \"entityCache\""]
+  },
+  {
+    "module": "data",
+    "api": "ENTITY_CACHE_NAME_TOKEN",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ENTITY_CACHE_NAME_TOKEN: InjectionToken<string>"]
+  },
+  {
+    "module": "data",
+    "api": "ENTITY_CACHE_META_REDUCERS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ENTITY_CACHE_META_REDUCERS: InjectionToken<any[]>"]
+  },
+  {
+    "module": "data",
+    "api": "ENTITY_COLLECTION_META_REDUCERS",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const ENTITY_COLLECTION_META_REDUCERS: InjectionToken<any[]>"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "INITIAL_ENTITY_CACHE_STATE",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const INITIAL_ENTITY_CACHE_STATE: InjectionToken<EntityCache | (() => EntityCache)>"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheReducerFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCacheReducerFactory {\r\ncreate(): ActionReducer<EntityCache, Action>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCache",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityCache {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityChangeTrackerBase",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityChangeTrackerBase<T> implements EntityChangeTracker<T> {\r\ncommitAll(collection: EntityCollection<T>): EntityCollection<T>;\r\ncommitMany(\r\n    entityOrIdList: (number | string | T)[],\r\n    collection: EntityCollection<T>\r\n  ): EntityCollection<T>;\r\ncommitOne(\r\n    entityOrId: number | string | T,\r\n    collection: EntityCollection<T>\r\n  ): EntityCollection<T>;\r\nmergeQueryResults(\r\n    entities: T[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\nmergeSaveAdds(\r\n    entities: T[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\nmergeSaveDeletes(\r\n    keys: (number | string)[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\nmergeSaveUpdates(\r\n    updateResponseData: UpdateResponseData<T>[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy,\r\n    skipUnchanged = false\r\n  ): EntityCollection<T>;\r\nmergeSaveUpserts(\r\n    entities: T[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackAddMany(\r\n    entities: T[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackAddOne(\r\n    entity: T,\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackDeleteMany(\r\n    keys: (number | string)[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackDeleteOne(\r\n    key: number | string,\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackUpdateMany(\r\n    updates: Update<T>[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackUpdateOne(\r\n    update: Update<T>,\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackUpsertMany(\r\n    entities: T[],\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\ntrackUpsertOne(\r\n    entity: T,\r\n    collection: EntityCollection<T>,\r\n    mergeStrategy?: MergeStrategy\r\n  ): EntityCollection<T>;\r\nundoAll(collection: EntityCollection<T>): EntityCollection<T>;\r\nundoMany(\r\n    entityOrIdList: (number | string | T)[],\r\n    collection: EntityCollection<T>\r\n  ): EntityCollection<T>;\r\nundoOne(\r\n    entityOrId: number | string | T,\r\n    collection: EntityCollection<T>\r\n  ): EntityCollection<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityChangeTracker",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityChangeTracker<T> {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionCreator",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionCreator {\r\ncreate<T = any, S extends EntityCollection<T> = EntityCollection<T>>(\r\n    entityName: string\r\n  ): S;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "createEmptyEntityCollection",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createEmptyEntityCollection<T>( entityName?: string ): EntityCollection<T>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducerMethodMap",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityCollectionReducerMethodMap<T> {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducerMethods",
+    "kind": "ClassDeclaration",
+    "signatures": ["class EntityCollectionReducerMethods<T> { }"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducerMethodsFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionReducerMethodsFactory {\r\ncreate<T>(entityName: string): EntityCollectionReducerMethodMap<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducers",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityCollectionReducers {}"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducerRegistry",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionReducerRegistry {\r\ngetOrCreateReducer<T>(entityName: string): EntityCollectionReducer<T>;\r\nregisterReducer<T>(\r\n    entityName: string,\r\n    reducer: EntityCollectionReducer<T>\r\n  ): EntityCollectionReducer<T>;\r\nregisterReducers(reducers: EntityCollectionReducers);\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducer",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type EntityCollectionReducer<T = any> = (\r\n  collection: EntityCollection<T>,\r\n  action: EntityAction\r\n) => EntityCollection<T>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollectionReducerFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityCollectionReducerFactory {\r\ncreate<T = any>(entityName: string): EntityCollectionReducer<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeType",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export enum ChangeType {\r\n  /** The entity has not changed from its last known server state. */\r\n  Unchanged = 0,\r\n  /** The entity was added to the collection */\r\n  Added,\r\n  /** The entity is scheduled for delete and was removed from the collection */\r\n  Deleted,\r\n  /** The entity in the collection was updated */\r\n  Updated,\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeState",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ChangeState<T> {\r\nchangeType: ChangeType;\r\noriginalValue?: T | undefined;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ChangeStateMap",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type ChangeStateMap<T> = Dictionary<ChangeState<T>>;"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCollection",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityCollection<T = any> {\r\nentityName: string;\r\nchangeState: ChangeStateMap<T>;\r\nfilter?: string;\r\nloaded: boolean;\r\nloading: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "ENTITY_CACHE_SELECTOR_TOKEN",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ENTITY_CACHE_SELECTOR_TOKEN: InjectionToken<any>"]
+  },
+  {
+    "module": "data",
+    "api": "entityCacheSelectorProvider",
+    "kind": "VariableDeclaration",
+    "signatures": ["const entityCacheSelectorProvider: FactoryProvider"]
+  },
+  {
+    "module": "data",
+    "api": "EntityCacheSelector",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type EntityCacheSelector = MemoizedSelector<Object, EntityCache>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "createEntityCacheSelector",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createEntityCacheSelector( entityCacheName?: string ): MemoizedSelector<Object, EntityCache>;"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "CollectionSelectors",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface CollectionSelectors<T> {\r\nreadonly selectCount: Selector<EntityCollection<T>, number>;\r\nreadonly selectEntities: Selector<EntityCollection<T>, T[]>;\r\nreadonly selectEntityMap: Selector<EntityCollection<T>, Dictionary<T>>;\r\nreadonly selectFilter: Selector<EntityCollection<T>, string>;\r\nreadonly selectFilteredEntities: Selector<EntityCollection<T>, T[]>;\r\nreadonly selectKeys: Selector<EntityCollection<T>, string[] | number[]>;\r\nreadonly selectLoaded: Selector<EntityCollection<T>, boolean>;\r\nreadonly selectLoading: Selector<EntityCollection<T>, boolean>;\r\nreadonly selectChangeState: Selector<EntityCollection<T>, ChangeStateMap<T>>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntitySelectors",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntitySelectors<T> {\r\nreadonly entityName: string;\r\nreadonly selectCollection: MemoizedSelector<Object, EntityCollection<T>>;\r\nreadonly selectCount: MemoizedSelector<Object, number>;\r\nreadonly selectEntities: MemoizedSelector<Object, T[]>;\r\nreadonly selectEntityCache: MemoizedSelector<Object, EntityCache>;\r\nreadonly selectEntityMap: MemoizedSelector<Object, Dictionary<T>>;\r\nreadonly selectFilter: MemoizedSelector<Object, string>;\r\nreadonly selectFilteredEntities: MemoizedSelector<Object, T[]>;\r\nreadonly selectKeys: MemoizedSelector<Object, string[] | number[]>;\r\nreadonly selectLoaded: MemoizedSelector<Object, boolean>;\r\nreadonly selectLoading: MemoizedSelector<Object, boolean>;\r\nreadonly selectChangeState: MemoizedSelector<Object, ChangeStateMap<T>>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntitySelectorsFactory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntitySelectorsFactory {\r\ncreateCollectionSelector<\r\n    T = any,\r\n    C extends EntityCollection<T> = EntityCollection<T>\r\n  >(entityName: string);\r\ncreateCollectionSelectors<\r\n    T,\r\n    S extends CollectionSelectors<T> = CollectionSelectors<T>\r\n  >(metadataOrName: EntityMetadata<T> | string): S;\r\ncreate<T, S extends EntitySelectors<T> = EntitySelectors<T>>(\r\n    metadataOrName: EntityMetadata<T> | string\r\n  ): S;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntitySelectors$",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntitySelectors$<T> {\r\nreadonly entityName: string;\r\nreadonly collection$: Observable<EntityCollection> | Store<EntityCollection>;\r\nreadonly count$: Observable<number> | Store<number>;\r\nreadonly entities$: Observable<T[]> | Store<T[]>;\r\nreadonly entityActions$: Observable<EntityAction>;\r\nreadonly entityMap$: Observable<Dictionary<T>> | Store<Dictionary<T>>;\r\nreadonly errors$: Observable<EntityAction>;\r\nreadonly filter$: Observable<string> | Store<string>;\r\nreadonly filteredEntities$: Observable<T[]> | Store<T[]>;\r\nreadonly keys$: Observable<string[] | number[]> | Store<string[] | number[]>;\r\nreadonly loaded$: Observable<boolean> | Store<boolean>;\r\nreadonly loading$: Observable<boolean> | Store<boolean>;\r\nreadonly changeState$: | Observable<ChangeStateMap<T>> | Store<ChangeStateMap<T>>;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntitySelectors$Factory",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntitySelectors$Factory {\r\ncreate<T, S$ extends EntitySelectors$<T> = EntitySelectors$<T>>(\r\n    entityName: string,\r\n    selectors: EntitySelectors<T>\r\n  ): S$;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "CorrelationIdGenerator",
+    "kind": "ClassDeclaration",
+    "signatures": ["class CorrelationIdGenerator {\r\nnext();\r\n}"]
+  },
+  {
+    "module": "data",
+    "api": "DefaultLogger",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultLogger implements Logger {\r\nerror(message?: any, extra?: any);\r\nlog(message?: any, extra?: any);\r\nwarn(message?: any, extra?: any);\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "DefaultPluralizer",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultPluralizer {\r\npluralize(name: string);\r\nregisterPluralNames(pluralNames: EntityPluralNames): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "getGuid",
+    "kind": "FunctionDeclaration",
+    "signatures": ["getGuid();"]
+  },
+  {
+    "module": "data",
+    "api": "getGuidComb",
+    "kind": "FunctionDeclaration",
+    "signatures": ["getGuidComb(seed?: number);"]
+  },
+  {
+    "module": "data",
+    "api": "guidComparer",
+    "kind": "FunctionDeclaration",
+    "signatures": ["guidComparer(l: string, r: string);"]
+  },
+  {
+    "module": "data",
+    "api": "Logger",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class Logger {\r\nabstract error(message?: any, ...optionalParams: any[]): void;\r\nabstract log(message?: any, ...optionalParams: any[]): void;\r\nabstract warn(message?: any, ...optionalParams: any[]): void;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityPluralNames",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface EntityPluralNames {}"]
+  },
+  {
+    "module": "data",
+    "api": "PLURAL_NAMES_TOKEN",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const PLURAL_NAMES_TOKEN: InjectionToken<EntityPluralNames>"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "Pluralizer",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class Pluralizer {\r\nabstract pluralize(name: string): string;\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "defaultSelectId",
+    "kind": "FunctionDeclaration",
+    "signatures": ["defaultSelectId(entity: any);"]
+  },
+  {
+    "module": "data",
+    "api": "flattenArgs",
+    "kind": "FunctionDeclaration",
+    "signatures": ["flattenArgs<T>(args?: any[]): T[];"]
+  },
+  {
+    "module": "data",
+    "api": "toUpdateFactory",
+    "kind": "FunctionDeclaration",
+    "signatures": ["toUpdateFactory<T>(selectId?: IdSelector<T>);"]
+  },
+  {
+    "module": "data",
+    "api": "EntityDataModuleConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityDataModuleConfig {\r\nentityMetadata?: EntityMetadataMap;\r\nentityCacheMetaReducers?: ( | MetaReducer<EntityCache, Action> | InjectionToken<MetaReducer<EntityCache, Action>> )[];\r\nentityCollectionMetaReducers?: MetaReducer<EntityCollection, EntityAction>[];\r\ninitialEntityCacheState?: EntityCache | (() => EntityCache);\r\npluralNames?: { [name: string]: string };\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDataModuleWithoutEffects",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityDataModuleWithoutEffects implements OnDestroy {\r\nstatic forRoot(\r\n    config: EntityDataModuleConfig\r\n  ): ModuleWithProviders<EntityDataModuleWithoutEffects>;\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "data",
+    "api": "EntityDataModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EntityDataModule {\r\nstatic forRoot(\r\n    config: EntityDataModuleConfig\r\n  ): ModuleWithProviders<EntityDataModule>;\r\naddEffects(effectSourceInstance: any);\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "createEffect",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createEffect< C extends EffectConfig, DT extends DispatchType<C>, OT extends ObservableType<DT, OT>, R extends EffectResult<OT> >( source: () => R & ConditionallyDisallowActionCreator<DT, R>, config?: Partial<C> ): R & CreateEffectMetadata;"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EffectConfig {\r\ndispatch?: boolean;\r\nuseEffectsErrorHandler?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "Effect",
+    "kind": "FunctionDeclaration",
+    "signatures": ["Effect(config: EffectConfig = {});"]
+  },
+  {
+    "module": "effects",
+    "api": "getEffectsMetadata",
+    "kind": "FunctionDeclaration",
+    "signatures": ["getEffectsMetadata<T>(instance: T): EffectsMetadata<T>;"]
+  },
+  {
+    "module": "effects",
+    "api": "mergeEffects",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "mergeEffects( sourceInstance: any, globalErrorHandler: ErrorHandler, effectsErrorHandler: EffectsErrorHandler ): Observable<EffectNotification>;"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectsErrorHandler",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type EffectsErrorHandler = <T extends Action>(\r\n  observable$: Observable<T>,\r\n  errorHandler: ErrorHandler\r\n) => Observable<T>;"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "defaultEffectsErrorHandler",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "defaultEffectsErrorHandler<T extends Action>( observable$: Observable<T>, errorHandler: ErrorHandler, retryAttemptLeft: number = MAX_NUMBER_OF_RETRY_ATTEMPTS ): Observable<T>;"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectsMetadata",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type EffectsMetadata<T> = {\r\n  [key in EffectPropertyKey<T>]?: EffectConfig;\r\n};"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "CreateEffectMetadata",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface CreateEffectMetadata {\r\n[CREATE_EFFECT_METADATA_KEY]: EffectConfig;\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "Actions",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class Actions<V = Action> extends Observable<V> {\r\nlift<R>(operator: Operator<V, R>): Observable<R>;\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "ofType",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "ofType< AC extends ActionCreator<string, Creator>[], U extends Action = Action, V = ReturnType<AC[number]> >(...allowedTypes: AC): OperatorFunction<U, V>;",
+      "ofType< E extends Extract<U, { type: T1 }>, AC extends ActionCreator<string, Creator>, T1 extends string | AC, U extends Action = Action, V = T1 extends string ? E : ReturnType<Extract<T1, AC>> >(t1: T1): OperatorFunction<U, V>;",
+      "ofType< E extends Extract<U, { type: T1 | T2 }>, AC extends ActionCreator<string, Creator>, T1 extends string | AC, T2 extends string | AC, U extends Action = Action, V = ActionExtractor<T1 | T2, AC, E> >(t1: T1, t2: T2): OperatorFunction<U, V>;",
+      "ofType< E extends Extract<U, { type: T1 | T2 | T3 }>, AC extends ActionCreator<string, Creator>, T1 extends string | AC, T2 extends string | AC, T3 extends string | AC, U extends Action = Action, V = ActionExtractor<T1 | T2 | T3, AC, E> >(t1: T1, t2: T2, t3: T3): OperatorFunction<U, V>;",
+      "ofType< E extends Extract<U, { type: T1 | T2 | T3 | T4 }>, AC extends ActionCreator<string, Creator>, T1 extends string | AC, T2 extends string | AC, T3 extends string | AC, T4 extends string | AC, U extends Action = Action, V = ActionExtractor<T1 | T2 | T3 | T4, AC, E> >(t1: T1, t2: T2, t3: T3, t4: T4): OperatorFunction<U, V>;",
+      "ofType< E extends Extract<U, { type: T1 | T2 | T3 | T4 | T5 }>, AC extends ActionCreator<string, Creator>, T1 extends string | AC, T2 extends string | AC, T3 extends string | AC, T4 extends string | AC, T5 extends string | AC, U extends Action = Action, V = ActionExtractor<T1 | T2 | T3 | T4 | T5, AC, E> >(t1: T1, t2: T2, t3: T3, t4: T4, t5: T5): OperatorFunction<U, V>;",
+      "ofType<V extends Action>( ...allowedTypes: Array<string | ActionCreator<string, Creator>> ): OperatorFunction<Action, V>;",
+      "ofType( ...allowedTypes: Array<string | ActionCreator<string, Creator>> ): OperatorFunction<Action, Action>;"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectsModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EffectsModule {\r\nstatic forFeature(\r\n    featureEffects: Type<any>[] = []\r\n  ): ModuleWithProviders<EffectsFeatureModule>;\r\nstatic forRoot(\r\n    rootEffects: Type<any>[] = []\r\n  ): ModuleWithProviders<EffectsRootModule>;\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectSources",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EffectSources extends Subject<any> {\r\naddEffects(effectSourceInstance: any): void;\r\ntoActions(): Observable<Action>;\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectsRunner",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EffectsRunner implements OnDestroy {\r\nstart();\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectNotification",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EffectNotification {\r\neffect: Observable<any> | (() => Observable<any>);\r\npropertyName: PropertyKey;\r\nsourceName: string;\r\nsourceInstance: any;\r\nnotification: Notification<Action | null | undefined>;\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EffectsFeatureModule",
+    "kind": "ClassDeclaration",
+    "signatures": ["class EffectsFeatureModule { }"]
+  },
+  {
+    "module": "effects",
+    "api": "ROOT_EFFECTS_INIT",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROOT_EFFECTS_INIT: \"@ngrx/effects/init\""]
+  },
+  {
+    "module": "effects",
+    "api": "rootEffectsInit",
+    "kind": "VariableDeclaration",
+    "signatures": ["const rootEffectsInit: any"]
+  },
+  {
+    "module": "effects",
+    "api": "EffectsRootModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class EffectsRootModule {\r\naddEffects(effectSourceInstance: any);\r\n}"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "EFFECTS_ERROR_HANDLER",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const EFFECTS_ERROR_HANDLER: InjectionToken<EffectsErrorHandler>"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "act",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "act< Input, OutputAction extends Action, ErrorAction extends Action >( project: (input: Input, index: number) => Observable<OutputAction>, error: (error: any, input: Input) => ErrorAction ): (source: Observable<Input>) => Observable<OutputAction | ErrorAction>;",
+      "act< Input, OutputAction extends Action, ErrorAction extends Action, CompleteAction extends Action = never, UnsubscribeAction extends Action = never >( config: ActConfig< Input, OutputAction, ErrorAction, CompleteAction, UnsubscribeAction > ): ( source: Observable<Input> ) => Observable< OutputAction | ErrorAction | CompleteAction | UnsubscribeAction >;",
+      "act< Input, OutputAction extends Action, ErrorAction extends Action, CompleteAction extends Action = never, UnsubscribeAction extends Action = never >( /** Allow to take either config object or project/error functions */ configOrProject: | ActConfig< Input, OutputAction, ErrorAction, CompleteAction, UnsubscribeAction > | ((input: Input, index: number) => Observable<OutputAction>), errorFn?: (error: any, input: Input) => ErrorAction ): ( source: Observable<Input> ) => Observable< OutputAction | ErrorAction | CompleteAction | UnsubscribeAction >;"
+    ]
+  },
+  {
+    "module": "effects",
+    "api": "OnIdentifyEffects",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface OnIdentifyEffects {}"]
+  },
+  {
+    "module": "effects",
+    "api": "OnRunEffects",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface OnRunEffects {}"]
+  },
+  {
+    "module": "effects",
+    "api": "OnInitEffects",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface OnInitEffects {}"]
+  },
+  {
+    "module": "effects",
+    "api": "USER_PROVIDED_EFFECTS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const USER_PROVIDED_EFFECTS: InjectionToken<Type<any>[][]>"]
+  },
+  {
+    "module": "entity",
+    "api": "createEntityAdapter",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createEntityAdapter<T>( options: { selectId?: IdSelector<T>; sortComparer?: false | Comparer<T>; } = {} ): EntityAdapter<T>;"
+    ]
+  },
+  {
+    "module": "entity",
+    "api": "Dictionary",
+    "kind": "ClassDeclaration",
+    "signatures": ["class Dictionary<T> implements DictionaryNum<T> { }"]
+  },
+  {
+    "module": "entity",
+    "api": "EntityState",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityState<T> {\r\nids: string[] | number[];\r\nentities: Dictionary<T>;\r\n}"
+    ]
+  },
+  {
+    "module": "entity",
+    "api": "EntityAdapter",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface EntityAdapter<T> {\r\nselectId: IdSelector<T>;\r\nsortComparer: false | Comparer<T>;\r\n\r\n// inherited from EntityStateAdapter\r\n}"
+    ]
+  },
+  {
+    "module": "entity",
+    "api": "Update",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type Update<T> = UpdateStr<T> | UpdateNum<T>;"]
+  },
+  {
+    "module": "entity",
+    "api": "EntityMap",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type EntityMap<T> = (entity: T) => T;"]
+  },
+  {
+    "module": "entity",
+    "api": "Predicate",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type Predicate<T> = (entity: T) => boolean;"]
+  },
+  {
+    "module": "entity",
+    "api": "IdSelector",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type IdSelector<T> = IdSelectorStr<T> | IdSelectorNum<T>;"]
+  },
+  {
+    "module": "entity",
+    "api": "Comparer",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type Comparer<T> = (a: T, b: T) => number;"]
+  },
+  {
+    "module": "router-store",
+    "api": "ROUTER_ERROR",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROUTER_ERROR: \"@ngrx/router-store/error\""]
+  },
+  {
+    "module": "router-store",
+    "api": "ROUTER_CANCEL",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROUTER_CANCEL: \"@ngrx/router-store/cancel\""]
+  },
+  {
+    "module": "router-store",
+    "api": "ROUTER_NAVIGATION",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROUTER_NAVIGATION: \"@ngrx/router-store/navigation\""]
+  },
+  {
+    "module": "router-store",
+    "api": "ROUTER_NAVIGATED",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROUTER_NAVIGATED: \"@ngrx/router-store/navigated\""]
+  },
+  {
+    "module": "router-store",
+    "api": "ROUTER_REQUEST",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROUTER_REQUEST: \"@ngrx/router-store/request\""]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterAction",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterAction<\r\n  T,\r\n  V extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> =\r\n  | RouterRequestAction<V>\r\n  | RouterNavigationAction<V>\r\n  | RouterCancelAction<T, V>\r\n  | RouterErrorAction<T, V>\r\n  | RouterNavigatedAction<V>;"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterCancelAction",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterCancelAction<\r\n  T,\r\n  V extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  type: typeof ROUTER_CANCEL;\r\n  payload: RouterCancelPayload<T, V>;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterCancelPayload",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterCancelPayload<\r\n  T,\r\n  V extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  routerState: V;\r\n  storeState: T;\r\n  event: NavigationCancel;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterErrorAction",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterErrorAction<\r\n  T,\r\n  V extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  type: typeof ROUTER_ERROR;\r\n  payload: RouterErrorPayload<T, V>;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterErrorPayload",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterErrorPayload<\r\n  T,\r\n  V extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  routerState: V;\r\n  storeState: T;\r\n  event: NavigationError;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterNavigatedAction",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterNavigatedAction<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  type: typeof ROUTER_NAVIGATED;\r\n  payload: RouterNavigatedPayload<T>;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterNavigatedPayload",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterNavigatedPayload<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  routerState: T;\r\n  event: NavigationEnd;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterNavigationAction",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterNavigationAction<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  type: typeof ROUTER_NAVIGATION;\r\n  payload: RouterNavigationPayload<T>;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterNavigationPayload",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterNavigationPayload<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  routerState: T;\r\n  event: RoutesRecognized;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterRequestAction",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterRequestAction<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  type: typeof ROUTER_REQUEST;\r\n  payload: RouterRequestPayload<T>;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterRequestPayload",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterRequestPayload<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  routerState: T;\r\n  event: NavigationStart;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "routerCancelAction",
+    "kind": "VariableDeclaration",
+    "signatures": ["const routerCancelAction: any"]
+  },
+  {
+    "module": "router-store",
+    "api": "routerErrorAction",
+    "kind": "VariableDeclaration",
+    "signatures": ["const routerErrorAction: any"]
+  },
+  {
+    "module": "router-store",
+    "api": "routerNavigatedAction",
+    "kind": "VariableDeclaration",
+    "signatures": ["const routerNavigatedAction: any"]
+  },
+  {
+    "module": "router-store",
+    "api": "routerNavigationAction",
+    "kind": "VariableDeclaration",
+    "signatures": ["const routerNavigationAction: any"]
+  },
+  {
+    "module": "router-store",
+    "api": "routerRequestAction",
+    "kind": "VariableDeclaration",
+    "signatures": ["const routerRequestAction: any"]
+  },
+  {
+    "module": "router-store",
+    "api": "routerReducer",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "routerReducer< T extends BaseRouterStoreState = SerializedRouterStateSnapshot >( state: RouterReducerState<T> | undefined, action: Action ): RouterReducerState<T>;"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterReducerState",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type RouterReducerState<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = {\r\n  state: T;\r\n  navigationId: number;\r\n};"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "StateKeyOrSelector",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type StateKeyOrSelector<\r\n  T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n> = string | Selector<any, RouterReducerState<T>>;"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "StoreRouterConnectingModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class StoreRouterConnectingModule {\r\nstatic forRoot<\r\n    T extends BaseRouterStoreState = SerializedRouterStateSnapshot\r\n  >(\r\n    config: StoreRouterConfig<T> = {}\r\n  ): ModuleWithProviders<StoreRouterConnectingModule>;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "StoreRouterConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface StoreRouterConfig<T extends BaseRouterStoreState = SerializedRouterStateSnapshot> {\r\nstateKey?: StateKeyOrSelector<T>;\r\nserializer?: new (...args: any[]) => RouterStateSerializer;\r\nnavigationActionTiming?: NavigationActionTiming;\r\nrouterState?: RouterState;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "NavigationActionTiming",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export enum NavigationActionTiming {\r\n  PreActivation = 1,\r\n  PostActivation = 2,\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "ROUTER_CONFIG",
+    "kind": "VariableDeclaration",
+    "signatures": ["const ROUTER_CONFIG: InjectionToken<unknown>"]
+  },
+  {
+    "module": "router-store",
+    "api": "DEFAULT_ROUTER_FEATURENAME",
+    "kind": "VariableDeclaration",
+    "signatures": ["const DEFAULT_ROUTER_FEATURENAME: \"router\""]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterState",
+    "kind": "EnumDeclaration",
+    "signatures": [
+      "export const enum RouterState {\r\n  Full,\r\n  Minimal,\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "RouterStateSerializer",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class RouterStateSerializer<T extends BaseRouterStoreState = BaseRouterStoreState> {\r\nabstract serialize(routerState: RouterStateSnapshot): T;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "BaseRouterStoreState",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface BaseRouterStoreState {\r\nurl: string;\r\n}"]
+  },
+  {
+    "module": "router-store",
+    "api": "DefaultRouterStateSerializer",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class DefaultRouterStateSerializer implements RouterStateSerializer<SerializedRouterStateSnapshot> {\r\nserialize(routerState: RouterStateSnapshot): SerializedRouterStateSnapshot;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "SerializedRouterStateSnapshot",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface SerializedRouterStateSnapshot {\r\nroot: ActivatedRouteSnapshot;\r\nurl: string;\r\n\r\n// inherited from BaseRouterStoreState\r\nurl: string;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "MinimalActivatedRouteSnapshot",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface MinimalActivatedRouteSnapshot {\r\nrouteConfig: ActivatedRouteSnapshot['routeConfig'];\r\nurl: ActivatedRouteSnapshot['url'];\r\nparams: ActivatedRouteSnapshot['params'];\r\nqueryParams: ActivatedRouteSnapshot['queryParams'];\r\nfragment: ActivatedRouteSnapshot['fragment'];\r\ndata: ActivatedRouteSnapshot['data'];\r\noutlet: ActivatedRouteSnapshot['outlet'];\r\nfirstChild?: MinimalActivatedRouteSnapshot;\r\nchildren: MinimalActivatedRouteSnapshot[];\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "MinimalRouterStateSnapshot",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface MinimalRouterStateSnapshot {\r\nroot: MinimalActivatedRouteSnapshot;\r\nurl: string;\r\n\r\n// inherited from BaseRouterStoreState\r\nurl: string;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "MinimalRouterStateSerializer",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class MinimalRouterStateSerializer implements RouterStateSerializer<MinimalRouterStateSnapshot> {\r\nserialize(routerState: RouterStateSnapshot): MinimalRouterStateSnapshot;\r\n}"
+    ]
+  },
+  {
+    "module": "router-store",
+    "api": "getSelectors",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "getSelectors<V>( selectState: (state: V) => RouterReducerState<any> ): RouterStateSelectors<V>;",
+      "getSelectors<V>( selectState: (state: V) => RouterReducerState<any> ): RouterStateSelectors<V>;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "isIvyEnabled",
+    "kind": "FunctionDeclaration",
+    "signatures": ["isIvyEnabled(tree: Tree, tsConfigPath: string): boolean;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "findNodes",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "findNodes( node: ts.Node, kind: ts.SyntaxKind, max = Infinity ): ts.Node[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getSourceNodes",
+    "kind": "FunctionDeclaration",
+    "signatures": ["getSourceNodes(sourceFile: ts.SourceFile): ts.Node[];"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getDecoratorMetadata",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "getDecoratorMetadata( source: ts.SourceFile, identifier: string, module: string ): ts.Node[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getContentOfKeyLiteral",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "getContentOfKeyLiteral( _source: ts.SourceFile, node: ts.Node ): string | null;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "insertAfterLastOccurrence",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "insertAfterLastOccurrence( nodes: ts.Node[], toInsert: string, file: string, fallbackPos: number, syntaxKind?: ts.SyntaxKind ): Change;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "insertImport",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "insertImport( source: ts.SourceFile, fileToEdit: string, symbolName: string, fileName: string, isDefault = false ): Change;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addBootstrapToModule",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addBootstrapToModule( source: ts.SourceFile, modulePath: string, classifiedName: string, importPath: string ): Change[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addDeclarationToModule",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addDeclarationToModule( source: ts.SourceFile, modulePath: string, classifiedName: string, importPath: string ): Change[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addExportToModule",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addExportToModule( source: ts.SourceFile, modulePath: string, classifiedName: string, importPath: string ): Change[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addImportToModule",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addImportToModule( source: ts.SourceFile, modulePath: string, classifiedName: string, importPath: string ): Change[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addProviderToModule",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addProviderToModule( source: ts.SourceFile, modulePath: string, classifiedName: string, importPath: string ): Change[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "replaceImport",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "replaceImport( sourceFile: ts.SourceFile, path: Path, importFrom: string, importAsIs: string, importToBe: string ): (ReplaceChange | RemoveChange)[];"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "containsProperty",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "containsProperty( objectLiteral: ts.ObjectLiteralExpression, propertyName: string );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "Host",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface Host {}"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "Change",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface Change {\r\nreadonly path: string | null;\r\nreadonly order: number;\r\nreadonly description: string;\r\n}"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "NoopChange",
+    "kind": "ClassDeclaration",
+    "signatures": ["class NoopChange implements Change {\r\napply();\r\n}"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "InsertChange",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class InsertChange implements Change {\r\napply(host: Host);\r\n}"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "RemoveChange",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class RemoveChange implements Change {\r\napply(host: Host): Promise<void>;\r\n}"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "ReplaceChange",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ReplaceChange implements Change {\r\napply(host: Host): Promise<void>;\r\n}"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "createReplaceChange",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createReplaceChange( sourceFile: ts.SourceFile, node: ts.Node, oldText: string, newText: string ): ReplaceChange;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "createChangeRecorder",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createChangeRecorder( tree: Tree, path: string, changes: Change[] ): UpdateRecorder;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "commitChanges",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "commitChanges(tree: Tree, path: string, changes: Change[]);"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "AppConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface AppConfig {\r\nname?: string;\r\nappRoot?: string;\r\nroot?: string;\r\noutDir?: string;\r\nassets?: ( | string | { /** * The pattern to match. */ glob?: string; /** * The dir to search within. */ input?: string; /** * The output path (relative to the outDir). */ output?: string; } )[];\r\ndeployUrl?: string;\r\nbaseHref?: string;\r\nplatform?: 'browser' | 'server';\r\nindex?: string;\r\nmain?: string;\r\npolyfills?: string;\r\ntest?: string;\r\ntsconfig?: string;\r\ntestTsconfig?: string;\r\nprefix?: string;\r\nserviceWorker?: boolean;\r\nstyles?: ( | string | { input?: string; [name: string]: any; // tslint:disable-line:no-any } )[];\r\nstylePreprocessorOptions?: { /** * Paths to include. Paths will be resolved to project root. */ includePaths?: string[]; };\r\nscripts?: ( | string | { input: string; [name: string]: any; // tslint:disable-line:no-any } )[];\r\nenvironmentSource?: string;\r\nenvironments?: { [name: string]: any; // tslint:disable-line:no-any };\r\nappShell?: { app: string; route: string; };\r\n}"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getWorkspace",
+    "kind": "FunctionDeclaration",
+    "signatures": ["getWorkspace(host: Tree): WorkspaceSchema;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getWorkspacePath",
+    "kind": "FunctionDeclaration",
+    "signatures": ["getWorkspacePath(host: Tree): string;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "findModule",
+    "kind": "FunctionDeclaration",
+    "signatures": ["findModule(host: Tree, generateDir: string): Path;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "findModuleFromOptions",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "findModuleFromOptions( host: Tree, options: ModuleOptions ): Path | undefined;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "buildRelativePath",
+    "kind": "FunctionDeclaration",
+    "signatures": ["buildRelativePath(from: string, to: string): string;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "ModuleOptions",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ModuleOptions {\r\nmodule?: string;\r\nname: string;\r\nflat?: boolean;\r\npath?: string;\r\nskipImport?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "findPropertyInAstObject",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "findPropertyInAstObject( node: JsonAstObject, propertyName: string ): JsonAstNode | null;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addReducerToState",
+    "kind": "FunctionDeclaration",
+    "signatures": ["addReducerToState(options: any): Rule;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addReducerToStateInterface",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addReducerToStateInterface( source: ts.SourceFile, reducersPath: string, options: { name: string; plural: boolean } ): Change;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addReducerImportToNgModule",
+    "kind": "FunctionDeclaration",
+    "signatures": ["addReducerImportToNgModule(options: any): Rule;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addReducerToActionReducerMap",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addReducerToActionReducerMap( source: ts.SourceFile, reducersPath: string, options: { name: string; plural: boolean } ): Change;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "omit",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "omit<T extends { [key: string]: any }>( object: T, keyToRemove: keyof T ): Partial<T>;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getProjectPath",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "getProjectPath( host: Tree, options: { project?: string | undefined; path?: string | undefined } );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "getProject",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "getProject( host: Tree, options: { project?: string | undefined; path?: string | undefined } ): WorkspaceProject;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "isLib",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "isLib( host: Tree, options: { project?: string | undefined; path?: string | undefined } );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "stringUtils",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const stringUtils: { dasherize: typeof dasherize; decamelize: typeof decamelize; camelize: typeof camelize; classify: typeof classify; underscore: typeof underscore; group: typeof group; capitalize: typeof capitalize; featurePath: typeof featurePath; pluralize: typeof pluralize; }"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "updatePackage",
+    "kind": "FunctionDeclaration",
+    "signatures": ["updatePackage(name: string): Rule;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "parseName",
+    "kind": "FunctionDeclaration",
+    "signatures": ["parseName(path: string, name: string): Location;"]
+  },
+  {
+    "module": "schematics-core",
+    "api": "addPackageToPackageJson",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "addPackageToPackageJson( host: Tree, type: string, pkg: string, version: string ): Tree;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "platformVersion",
+    "kind": "VariableDeclaration",
+    "signatures": ["const platformVersion: \"^10.0.0-beta.1\""]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitTSSourceFiles",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitTSSourceFiles<Result = void>( tree: Tree, visitor: ( sourceFile: ts.SourceFile, tree: Tree, result?: Result ) => Result | undefined ): Result | undefined;"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitNgModuleImports",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitNgModuleImports( sourceFile: ts.SourceFile, callback: ( importNode: ts.PropertyAssignment, elementExpressions: ts.NodeArray<ts.Expression> ) => void );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitNgModuleExports",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitNgModuleExports( sourceFile: ts.SourceFile, callback: ( exportNode: ts.PropertyAssignment, elementExpressions: ts.NodeArray<ts.Expression> ) => void );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitComponents",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitComponents( sourceFile: ts.SourceFile, callback: ( classDeclarationNode: ts.ClassDeclaration, decoratorExpressionNode: ts.ObjectLiteralExpression ) => void );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitDecorator",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitDecorator( sourceFile: ts.SourceFile, decoratorName: string, callback: ( classDeclarationNode: ts.ClassDeclaration, decoratorExpressionNode: ts.ObjectLiteralExpression ) => void );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitNgModules",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitNgModules( sourceFile: ts.SourceFile, callback: ( classDeclarationNode: ts.ClassDeclaration, decoratorExpressionNode: ts.ObjectLiteralExpression ) => void );"
+    ]
+  },
+  {
+    "module": "schematics-core",
+    "api": "visitTemplates",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "visitTemplates( tree: Tree, visitor: ( template: { fileName: string; content: string; inline: boolean; start: number; }, tree: Tree ) => void ): void;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "Action",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface Action {\r\ntype: string;\r\n}"]
+  },
+  {
+    "module": "store",
+    "api": "ActionCreator",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type ActionCreator<\r\n  T extends string = string,\r\n  C extends Creator = Creator\r\n> = C & TypedAction<T>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "ActionReducer",
+    "kind": "InterfaceDeclaration",
+    "signatures": ["interface ActionReducer<T, V extends Action = Action> {}"]
+  },
+  {
+    "module": "store",
+    "api": "ActionReducerMap",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type ActionReducerMap<T, V extends Action = Action> = {\r\n  [p in keyof T]: ActionReducer<T[p], V>;\r\n};"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "ActionReducerFactory",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface ActionReducerFactory<T, V extends Action = Action> {}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "ActionType",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type ActionType<A> = A extends ActionCreator<infer T, infer C>\r\n  ? ReturnType<C> & { type: T }\r\n  : never;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "Creator",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type Creator<\r\n  P extends any[] = any[],\r\n  R extends object = object\r\n> = FunctionWithParametersType<P, R>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "MetaReducer",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type MetaReducer<T = any, V extends Action = Action> = (\r\n  reducer: ActionReducer<T, V>\r\n) => ActionReducer<T, V>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "Selector",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type Selector<T, V> = (state: T) => V;"]
+  },
+  {
+    "module": "store",
+    "api": "SelectorWithProps",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type SelectorWithProps<State, Props, Result> = (\r\n  state: State,\r\n  props: Props\r\n) => Result;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "RuntimeChecks",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface RuntimeChecks {\r\nstrictStateSerializability: boolean;\r\nstrictActionSerializability: boolean;\r\nstrictStateImmutability: boolean;\r\nstrictActionImmutability: boolean;\r\nstrictActionWithinNgZone: boolean;\r\nstrictActionTypeUniqueness?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "createAction",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createAction<T extends string>( type: T ): ActionCreator<T, () => TypedAction<T>>;",
+      "createAction<T extends string, P extends object>( type: T, config: Props<P> & NotAllowedCheck<P> ): ActionCreator<T, (props: P & NotAllowedCheck<P>) => P & TypedAction<T>>;",
+      "createAction< T extends string, P extends any[], R extends object >( type: T, creator: Creator<P, R> & NotAllowedCheck<R> ): FunctionWithParametersType<P, R & TypedAction<T>> & TypedAction<T>;",
+      "createAction<T extends string, C extends Creator>( type: T, config?: { _as: 'props' } | C ): ActionCreator<T>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "props",
+    "kind": "FunctionDeclaration",
+    "signatures": ["props<P extends object>(): Props<P>;"]
+  },
+  {
+    "module": "store",
+    "api": "union",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "union< C extends { [key: string]: ActionCreator<string, Creator> } >(creators: C): ReturnType<C[keyof C]>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "Store",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class Store<T = object> extends Observable<T> implements Observer<Action> {\r\nselect<Props = any, K = any>(\r\n    pathOrMapFn: ((state: T, props?: Props) => K) | string,\r\n    ...paths: string[]\r\n  ): Observable<any>;\r\nlift<R>(operator: Operator<T, R>): Store<R>;\r\ndispatch<V extends Action = Action>(\r\n    action: V &\r\n      FunctionIsNotAllowed<\r\n        V,\r\n        'Functions are not allowed to be dispatched. Did you forget to call the action creator function?'\r\n      >\r\n  );\r\nnext(action: Action);\r\nerror(err: any);\r\ncomplete();\r\naddReducer<State, Actions extends Action = Action>(\r\n    key: string,\r\n    reducer: ActionReducer<State, Actions>\r\n  );\r\nremoveReducer<Key extends Extract<keyof T, string>>(key: Key);\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "select",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "select<T, Props, K>( mapFn: (state: T, props: Props) => K, props?: Props ): (source$: Observable<T>) => Observable<K>;",
+      "select<T, a extends keyof T>( key: a ): (source$: Observable<T>) => Observable<T[a]>;",
+      "select<T, a extends keyof T, b extends keyof T[a]>( key1: a, key2: b ): (source$: Observable<T>) => Observable<T[a][b]>;",
+      "select< T, a extends keyof T, b extends keyof T[a], c extends keyof T[a][b] >( key1: a, key2: b, key3: c ): (source$: Observable<T>) => Observable<T[a][b][c]>;",
+      "select< T, a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c] >( key1: a, key2: b, key3: c, key4: d ): (source$: Observable<T>) => Observable<T[a][b][c][d]>;",
+      "select< T, a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d] >( key1: a, key2: b, key3: c, key4: d, key5: e ): (source$: Observable<T>) => Observable<T[a][b][c][d][e]>;",
+      "select< T, a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d], f extends keyof T[a][b][c][d][e] >( key1: a, key2: b, key3: c, key4: d, key5: e, key6: f ): (source$: Observable<T>) => Observable<T[a][b][c][d][e][f]>;",
+      "select< T, a extends keyof T, b extends keyof T[a], c extends keyof T[a][b], d extends keyof T[a][b][c], e extends keyof T[a][b][c][d], f extends keyof T[a][b][c][d][e], K = any >( key1: a, key2: b, key3: c, key4: d, key5: e, key6: f, ...paths: string[] ): (source$: Observable<T>) => Observable<K>;",
+      "select<T, Props, K>( pathOrMapFn: ((state: T, props?: Props) => any) | string, propsOrPath?: Props | string, ...paths: string[] );"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "combineReducers",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "combineReducers<T, V extends Action = Action>( reducers: ActionReducerMap<T, V>, initialState?: Partial<T> ): ActionReducer<T, V>;",
+      "combineReducers( reducers: any, initialState: any = {} ): ActionReducer<any, Action>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "compose",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "compose<A>(): (i: A) => A;",
+      "compose<A, B>(b: (i: A) => B): (i: A) => B;",
+      "compose<A, B, C>(c: (i: B) => C, b: (i: A) => B): (i: A) => C;",
+      "compose<A, B, C, D>( d: (i: C) => D, c: (i: B) => C, b: (i: A) => B ): (i: A) => D;",
+      "compose<A, B, C, D, E>( e: (i: D) => E, d: (i: C) => D, c: (i: B) => C, b: (i: A) => B ): (i: A) => E;",
+      "compose<A, B, C, D, E, F>( f: (i: E) => F, e: (i: D) => E, d: (i: C) => D, c: (i: B) => C, b: (i: A) => B ): (i: A) => F;",
+      "compose<A = any, F = any>(...functions: any[]): (i: A) => F;",
+      "compose(...functions: any[]);"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "createReducerFactory",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createReducerFactory<T, V extends Action = Action>( reducerFactory: ActionReducerFactory<T, V>, metaReducers?: MetaReducer<T, V>[] ): ActionReducerFactory<T, V>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "ActionsSubject",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ActionsSubject extends BehaviorSubject<Action> implements OnDestroy {\r\nnext(action: Action): void;\r\ncomplete();\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "INIT",
+    "kind": "VariableDeclaration",
+    "signatures": ["const INIT: \"@ngrx/store/init\""]
+  },
+  {
+    "module": "store",
+    "api": "setNgrxMockEnvironment",
+    "kind": "FunctionDeclaration",
+    "signatures": ["setNgrxMockEnvironment(value: boolean): void;"]
+  },
+  {
+    "module": "store",
+    "api": "isNgrxMockEnvironment",
+    "kind": "FunctionDeclaration",
+    "signatures": ["isNgrxMockEnvironment(): boolean;"]
+  },
+  {
+    "module": "store",
+    "api": "ReducerManager",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ReducerManager extends BehaviorSubject<ActionReducer<any, any>> implements OnDestroy {\r\naddFeature(feature: StoreFeature<any, any>);\r\naddFeatures(features: StoreFeature<any, any>[]);\r\nremoveFeature(feature: StoreFeature<any, any>);\r\nremoveFeatures(features: StoreFeature<any, any>[]);\r\naddReducer(key: string, reducer: ActionReducer<any, any>);\r\naddReducers(reducers: { [key: string]: ActionReducer<any, any> });\r\nremoveReducer(featureKey: string);\r\nremoveReducers(featureKeys: string[]);\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "ReducerObservable",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ReducerObservable extends Observable< ActionReducer<any, any> > { }"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "ReducerManagerDispatcher",
+    "kind": "ClassDeclaration",
+    "signatures": ["class ReducerManagerDispatcher extends ActionsSubject { }"]
+  },
+  {
+    "module": "store",
+    "api": "UPDATE",
+    "kind": "VariableDeclaration",
+    "signatures": ["const UPDATE: \"@ngrx/store/update-reducers\""]
+  },
+  {
+    "module": "store",
+    "api": "ScannedActionsSubject",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class ScannedActionsSubject extends Subject<Action> implements OnDestroy {\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "createSelector",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createSelector<State, S1, Result>( s1: Selector<State, S1>, projector: (s1: S1) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, Result>( s1: SelectorWithProps<State, Props, S1>, projector: (s1: S1, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, Result>( selectors: [Selector<State, S1>], projector: (s1: S1) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, Result>( selectors: [SelectorWithProps<State, Props, S1>], projector: (s1: S1, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, projector: (s1: S1, s2: S2) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, Result>( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, projector: (s1: S1, s2: S2, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, Result>( selectors: [Selector<State, S1>, Selector<State, S2>], projector: (s1: S1, s2: S2) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, Result>( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2> ], projector: (s1: S1, s2: S2, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, s3: Selector<State, S3>, projector: (s1: S1, s2: S2, s3: S3) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, Result>( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, s3: SelectorWithProps<State, Props, S3>, projector: (s1: S1, s2: S2, s3: S3, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, Result>( selectors: [Selector<State, S1>, Selector<State, S2>, Selector<State, S3>], projector: (s1: S1, s2: S2, s3: S3) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, Result>( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2>, SelectorWithProps<State, Props, S3> ], projector: (s1: S1, s2: S2, s3: S3, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, s3: Selector<State, S3>, s4: Selector<State, S4>, projector: (s1: S1, s2: S2, s3: S3, s4: S4) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, S4, Result>( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, s3: SelectorWithProps<State, Props, S3>, s4: SelectorWithProps<State, Props, S4>, projector: (s1: S1, s2: S2, s3: S3, s4: S4, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, Result>( selectors: [ Selector<State, S1>, Selector<State, S2>, Selector<State, S3>, Selector<State, S4> ], projector: (s1: S1, s2: S2, s3: S3, s4: S4) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, S4, Result>( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2>, SelectorWithProps<State, Props, S3>, SelectorWithProps<State, Props, S4> ], projector: (s1: S1, s2: S2, s3: S3, s4: S4, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, s3: Selector<State, S3>, s4: Selector<State, S4>, s5: Selector<State, S5>, projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, S4, S5, Result>( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, s3: SelectorWithProps<State, Props, S3>, s4: SelectorWithProps<State, Props, S4>, s5: SelectorWithProps<State, Props, S5>, projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, Result>( selectors: [ Selector<State, S1>, Selector<State, S2>, Selector<State, S3>, Selector<State, S4>, Selector<State, S5> ], projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, S4, S5, Result>( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2>, SelectorWithProps<State, Props, S3>, SelectorWithProps<State, Props, S4>, SelectorWithProps<State, Props, S5> ], projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, props: Props) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, S6, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, s3: Selector<State, S3>, s4: Selector<State, S4>, s5: Selector<State, S5>, s6: Selector<State, S6>, projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, S4, S5, S6, Result>( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, s3: SelectorWithProps<State, Props, S3>, s4: SelectorWithProps<State, Props, S4>, s5: SelectorWithProps<State, Props, S5>, s6: SelectorWithProps<State, Props, S6>, projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, props: Props ) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, S6, Result>( selectors: [ Selector<State, S1>, Selector<State, S2>, Selector<State, S3>, Selector<State, S4>, Selector<State, S5>, Selector<State, S6> ], projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector<State, Props, S1, S2, S3, S4, S5, S6, Result>( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2>, SelectorWithProps<State, Props, S3>, SelectorWithProps<State, Props, S4>, SelectorWithProps<State, Props, S5>, SelectorWithProps<State, Props, S6> ], projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, props: Props ) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, S6, S7, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, s3: Selector<State, S3>, s4: Selector<State, S4>, s5: Selector<State, S5>, s6: Selector<State, S6>, s7: Selector<State, S7>, projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector< State, Props, S1, S2, S3, S4, S5, S6, S7, Result >( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, s3: SelectorWithProps<State, Props, S3>, s4: SelectorWithProps<State, Props, S4>, s5: SelectorWithProps<State, Props, S5>, s6: SelectorWithProps<State, Props, S6>, s7: SelectorWithProps<State, Props, S7>, projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7, props: Props ) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, S6, S7, Result>( selectors: [ Selector<State, S1>, Selector<State, S2>, Selector<State, S3>, Selector<State, S4>, Selector<State, S5>, Selector<State, S6>, Selector<State, S7> ], projector: (s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector< State, Props, S1, S2, S3, S4, S5, S6, S7, Result >( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2>, SelectorWithProps<State, Props, S3>, SelectorWithProps<State, Props, S4>, SelectorWithProps<State, Props, S5>, SelectorWithProps<State, Props, S6>, SelectorWithProps<State, Props, S7> ], projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7, props: Props ) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, S6, S7, S8, Result>( s1: Selector<State, S1>, s2: Selector<State, S2>, s3: Selector<State, S3>, s4: Selector<State, S4>, s5: Selector<State, S5>, s6: Selector<State, S6>, s7: Selector<State, S7>, s8: Selector<State, S8>, projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7, s8: S8 ) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector< State, Props, S1, S2, S3, S4, S5, S6, S7, S8, Result >( s1: SelectorWithProps<State, Props, S1>, s2: SelectorWithProps<State, Props, S2>, s3: SelectorWithProps<State, Props, S3>, s4: SelectorWithProps<State, Props, S4>, s5: SelectorWithProps<State, Props, S5>, s6: SelectorWithProps<State, Props, S6>, s7: SelectorWithProps<State, Props, S7>, s8: SelectorWithProps<State, Props, S8>, projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7, s8: S8, props: Props ) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector<State, S1, S2, S3, S4, S5, S6, S7, S8, Result>( selectors: [ Selector<State, S1>, Selector<State, S2>, Selector<State, S3>, Selector<State, S4>, Selector<State, S5>, Selector<State, S6>, Selector<State, S7>, Selector<State, S8> ], projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7, s8: S8 ) => Result ): MemoizedSelector<State, Result>;",
+      "createSelector< State, Props, S1, S2, S3, S4, S5, S6, S7, S8, Result >( selectors: [ SelectorWithProps<State, Props, S1>, SelectorWithProps<State, Props, S2>, SelectorWithProps<State, Props, S3>, SelectorWithProps<State, Props, S4>, SelectorWithProps<State, Props, S5>, SelectorWithProps<State, Props, S6>, SelectorWithProps<State, Props, S7>, SelectorWithProps<State, Props, S8> ], projector: ( s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, s6: S6, s7: S7, s8: S8, props: Props ) => Result ): MemoizedSelectorWithProps<State, Props, Result>;",
+      "createSelector( ...input: any[] ): MemoizedSelector<any, any> | MemoizedSelectorWithProps<any, any, any>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "createSelectorFactory",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createSelectorFactory<T = any, V = any>( memoize: MemoizeFn ): (...input: any[]) => MemoizedSelector<T, V>;",
+      "createSelectorFactory<T = any, V = any>( memoize: MemoizeFn, options: SelectorFactoryConfig<T, V> ): (...input: any[]) => MemoizedSelector<T, V>;",
+      "createSelectorFactory<T = any, Props = any, V = any>( memoize: MemoizeFn ): (...input: any[]) => MemoizedSelectorWithProps<T, Props, V>;",
+      "createSelectorFactory<T = any, Props = any, V = any>( memoize: MemoizeFn, options: SelectorFactoryConfig<T, V> ): (...input: any[]) => MemoizedSelectorWithProps<T, Props, V>;",
+      "createSelectorFactory( memoize: MemoizeFn, options: SelectorFactoryConfig<any, any> = { stateFn: defaultStateFn, } );"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "createFeatureSelector",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createFeatureSelector<T>( featureName: string ): MemoizedSelector<object, T>;",
+      "createFeatureSelector<T, V>( featureName: keyof T ): MemoizedSelector<T, V>;",
+      "createFeatureSelector( featureName: any ): MemoizedSelector<any, any>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "defaultMemoize",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "defaultMemoize( projectionFn: AnyFn, isArgumentsEqual = isEqualCheck, isResultEqual = isEqualCheck ): MemoizedProjection;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "defaultStateFn",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "defaultStateFn( state: any, selectors: Selector<any, any>[] | SelectorWithProps<any, any, any>[], props: any, memoizedProjector: MemoizedProjection ): any;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "MemoizeFn",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type MemoizeFn = (t: AnyFn) => MemoizedProjection;"]
+  },
+  {
+    "module": "store",
+    "api": "MemoizedProjection",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type MemoizedProjection = {\r\n  memoized: AnyFn;\r\n  reset: () => void;\r\n  setResult: (result?: any) => void;\r\n  clearResult: () => void;\r\n};"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "MemoizedSelector",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface MemoizedSelector<State, Result, ProjectorFn = DefaultProjectorFn<Result>> {\r\nprojector: ProjectorFn;\r\nsetResult: (result?: Result) => void;\r\nclearResult: () => void;\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "MemoizedSelectorWithProps",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface MemoizedSelectorWithProps<State, Props, Result, ProjectorFn = DefaultProjectorFn<Result>> {\r\nprojector: ProjectorFn;\r\nsetResult: (result?: Result) => void;\r\nclearResult: () => void;\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "resultMemoize",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "resultMemoize( projectionFn: AnyFn, isResultEqual: ComparatorFn );"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "DefaultProjectorFn",
+    "kind": "TypeAliasDeclaration",
+    "signatures": ["type DefaultProjectorFn<T> = (...args: any[]) => T;"]
+  },
+  {
+    "module": "store",
+    "api": "State",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class State<T> extends BehaviorSubject<any> implements OnDestroy {\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "StateObservable",
+    "kind": "ClassDeclaration",
+    "signatures": ["class StateObservable extends Observable<any> { }"]
+  },
+  {
+    "module": "store",
+    "api": "reduceState",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "reduceState<T, V extends Action = Action>( stateActionPair: StateActionPair<T, V> = { state: undefined }, [action, reducer]: [V, ActionReducer<T, V>] ): StateActionPair<T, V>;"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "INITIAL_STATE",
+    "kind": "VariableDeclaration",
+    "signatures": ["const INITIAL_STATE: InjectionToken<unknown>"]
+  },
+  {
+    "module": "store",
+    "api": "REDUCER_FACTORY",
+    "kind": "VariableDeclaration",
+    "signatures": ["const REDUCER_FACTORY: InjectionToken<unknown>"]
+  },
+  {
+    "module": "store",
+    "api": "INITIAL_REDUCERS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const INITIAL_REDUCERS: InjectionToken<unknown>"]
+  },
+  {
+    "module": "store",
+    "api": "STORE_FEATURES",
+    "kind": "VariableDeclaration",
+    "signatures": ["const STORE_FEATURES: InjectionToken<unknown>"]
+  },
+  {
+    "module": "store",
+    "api": "META_REDUCERS",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const META_REDUCERS: InjectionToken<MetaReducer<any, import(\"C:/Users/tdeschryver/dev/platform/modules/store/src/models\").Action>[]>"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "FEATURE_REDUCERS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const FEATURE_REDUCERS: InjectionToken<unknown>"]
+  },
+  {
+    "module": "store",
+    "api": "USER_PROVIDED_META_REDUCERS",
+    "kind": "VariableDeclaration",
+    "signatures": [
+      "const USER_PROVIDED_META_REDUCERS: InjectionToken<MetaReducer<any, import(\"C:/Users/tdeschryver/dev/platform/modules/store/src/models\").Action>[]>"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "USER_RUNTIME_CHECKS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const USER_RUNTIME_CHECKS: InjectionToken<RuntimeChecks>"]
+  },
+  {
+    "module": "store",
+    "api": "StoreModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class StoreModule {\r\nstatic forRoot(\r\n    reducers:\r\n      | ActionReducerMap<any, any>\r\n      | InjectionToken<ActionReducerMap<any, any>>,\r\n    config: RootStoreConfig<any, any> = {}\r\n  ): ModuleWithProviders<StoreRootModule>;\r\nstatic forFeature(\r\n    featureName: string,\r\n    reducers:\r\n      | ActionReducerMap<any, any>\r\n      | InjectionToken<ActionReducerMap<any, any>>\r\n      | ActionReducer<any, any>\r\n      | InjectionToken<ActionReducer<any, any>>,\r\n    config: StoreConfig<any, any> | InjectionToken<StoreConfig<any, any>> = {}\r\n  ): ModuleWithProviders<StoreFeatureModule>;\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "StoreRootModule",
+    "kind": "ClassDeclaration",
+    "signatures": ["class StoreRootModule { }"]
+  },
+  {
+    "module": "store",
+    "api": "StoreFeatureModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class StoreFeatureModule implements OnDestroy {\r\nngOnDestroy();\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "RootStoreConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface RootStoreConfig<T, V extends Action = Action> {\r\nruntimeChecks?: Partial<RuntimeChecks>;\r\n\r\n// inherited from StoreConfig\r\ninitialState?: InitialState<T>;\r\nreducerFactory?: ActionReducerFactory<T, V>;\r\nmetaReducers?: MetaReducer<T, V>[];\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "StoreConfig",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface StoreConfig<T, V extends Action = Action> {\r\ninitialState?: InitialState<T>;\r\nreducerFactory?: ActionReducerFactory<T, V>;\r\nmetaReducers?: MetaReducer<T, V>[];\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "On",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface On<S> {\r\nreducer: ActionReducer<S>;\r\ntypes: string[];\r\n}"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "on",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "on<C1 extends ActionCreator, S>( creator1: C1, reducer: OnReducer<S, [C1]> ): On<S>;",
+      "on<C1 extends ActionCreator, C2 extends ActionCreator, S>( creator1: C1, creator2: C2, reducer: OnReducer<S, [C1, C2]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, reducer: OnReducer<S, [C1, C2, C3]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, reducer: OnReducer<S, [C1, C2, C3, C4]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, C5 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, creator5: C5, reducer: OnReducer<S, [C1, C2, C3, C4, C5]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, C5 extends ActionCreator, C6 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, creator5: C5, creator6: C6, reducer: OnReducer<S, [C1, C2, C3, C4, C5, C6]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, C5 extends ActionCreator, C6 extends ActionCreator, C7 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, creator5: C5, creator6: C6, creator7: C7, reducer: OnReducer<S, [C1, C2, C3, C4, C5, C6, C7]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, C5 extends ActionCreator, C6 extends ActionCreator, C7 extends ActionCreator, C8 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, creator5: C5, creator6: C6, creator7: C7, creator8: C8, reducer: OnReducer<S, [C1, C2, C3, C4, C5, C6, C7, C8]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, C5 extends ActionCreator, C6 extends ActionCreator, C7 extends ActionCreator, C8 extends ActionCreator, C9 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, creator5: C5, creator6: C6, creator7: C7, creator8: C8, creator9: C9, reducer: OnReducer<S, [C1, C2, C3, C4, C5, C6, C7, C8, C9]> ): On<S>;",
+      "on< C1 extends ActionCreator, C2 extends ActionCreator, C3 extends ActionCreator, C4 extends ActionCreator, C5 extends ActionCreator, C6 extends ActionCreator, C7 extends ActionCreator, C8 extends ActionCreator, C9 extends ActionCreator, C10 extends ActionCreator, S >( creator1: C1, creator2: C2, creator3: C3, creator4: C4, creator5: C5, creator6: C6, creator7: C7, creator8: C8, creator9: C9, creator10: C10, reducer: OnReducer<S, [C1, C2, C3, C4, C5, C6, C7, C8, C9, C10]> ): On<S>;",
+      "on<S>( creator: ActionCreator, ...rest: (ActionCreator | OnReducer<S, [ActionCreator]>)[] ): On<S>;",
+      "on( ...args: (ActionCreator | Function)[] ): { reducer: Function; types: string[] };"
+    ]
+  },
+  {
+    "module": "store",
+    "api": "createReducer",
+    "kind": "FunctionDeclaration",
+    "signatures": [
+      "createReducer<S, A extends Action = Action>( initialState: S, ...ons: On<S>[] ): ActionReducer<S, A>;"
+    ]
+  },
+  {
+    "module": "store-devtools",
+    "api": "StoreDevtoolsModule",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class StoreDevtoolsModule {\r\nstatic instrument(\r\n    options: StoreDevtoolsOptions = {}\r\n  ): ModuleWithProviders<StoreDevtoolsModule>;\r\n}"
+    ]
+  },
+  {
+    "module": "store-devtools",
+    "api": "LiftedState",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface LiftedState {\r\nmonitorState: any;\r\nnextActionId: number;\r\nactionsById: LiftedActions;\r\nstagedActionIds: number[];\r\nskippedActionIds: number[];\r\ncommittedState: any;\r\ncurrentStateIndex: number;\r\ncomputedStates: ComputedState[];\r\nisLocked: boolean;\r\nisPaused: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "store-devtools",
+    "api": "RECOMPUTE",
+    "kind": "VariableDeclaration",
+    "signatures": ["const RECOMPUTE: \"@ngrx/store-devtools/recompute\""]
+  },
+  {
+    "module": "store-devtools",
+    "api": "StoreDevtools",
+    "kind": "ClassDeclaration",
+    "signatures": [
+      "class StoreDevtools implements Observer<any> {\r\ndispatch(action: Action);\r\nnext(action: any);\r\nerror(error: any);\r\ncomplete();\r\nperformAction(action: any);\r\nrefresh();\r\nreset();\r\nrollback();\r\ncommit();\r\nsweep();\r\ntoggleAction(id: number);\r\njumpToAction(actionId: number);\r\njumpToState(index: number);\r\nimportState(nextLiftedState: any);\r\nlockChanges(status: boolean);\r\npauseRecording(status: boolean);\r\n}"
+    ]
+  },
+  {
+    "module": "store-devtools",
+    "api": "StoreDevtoolsConfig",
+    "kind": "ClassDeclaration",
+    "signatures": ["class StoreDevtoolsConfig { }"]
+  },
+  {
+    "module": "store-devtools",
+    "api": "StoreDevtoolsOptions",
+    "kind": "TypeAliasDeclaration",
+    "signatures": [
+      "type StoreDevtoolsOptions =\r\n  | Partial<StoreDevtoolsConfig>\r\n  | (() => Partial<StoreDevtoolsConfig>);"
+    ]
+  },
+  {
+    "module": "store-devtools",
+    "api": "DevToolsFeatureOptions",
+    "kind": "InterfaceDeclaration",
+    "signatures": [
+      "interface DevToolsFeatureOptions {\r\npause?: boolean;\r\nlock?: boolean;\r\npersist?: boolean;\r\nexport?: boolean;\r\nimport?: 'custom' | boolean;\r\njump?: boolean;\r\nskip?: boolean;\r\nreorder?: boolean;\r\ndispatch?: boolean;\r\ntest?: boolean;\r\n}"
+    ]
+  },
+  {
+    "module": "store-devtools",
+    "api": "INITIAL_OPTIONS",
+    "kind": "VariableDeclaration",
+    "signatures": ["const INITIAL_OPTIONS: InjectionToken<StoreDevtoolsConfig>"]
+  }
+]
