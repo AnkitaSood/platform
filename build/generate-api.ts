@@ -54,6 +54,7 @@ function generateApiForFile(sourceFile: SourceFile) {
           ((declaration) => declaration.getText());
         return formatter(d);
       }),
+      information: getInformation(declarations[0]),
     });
   }
 
@@ -69,6 +70,62 @@ function writeApi(output: Output[]) {
     ...prettierConfig,
   });
   writeFileSync('./output.json', apiOutput, 'utf-8');
+}
+
+function getInformation(declaration: ExportedDeclarations) {
+  if (
+    declaration !== undefined &&
+    !TypeGuards.isFunctionDeclaration(declaration) &&
+    !TypeGuards.isInterfaceDeclaration(declaration) &&
+    !TypeGuards.isEnumDeclaration(declaration) &&
+    !TypeGuards.isTypeAliasDeclaration(declaration) &&
+    !TypeGuards.isClassDeclaration(declaration)
+  ) {
+    return [];
+  }
+
+  const docs = declaration.getJsDocs();
+  let tagIndex = -1;
+  const information: string[][] = [];
+
+  // manually parse the jsDoc tags
+  // ts-morph doesn't handle multi line tag text?
+  for (const doc of docs) {
+    const text = doc.getText();
+    const lines = text
+      .split('\n')
+      // remove the first line /**
+      .filter((_, i) => i > 0)
+      // remove the leading *
+      .map((l) => l.trim().substr(2));
+
+    for (const line of lines) {
+      // we hit a tag, create a new entry
+      if (line.startsWith('@')) {
+        let [tagName, ...lineText] = line.substr(1).split(' ');
+        information[++tagIndex] = [tagName];
+        // if the line includes the tag description add it
+        if (lineText.length) {
+          information[tagIndex].push(lineText.join(' '));
+        }
+      } else if (information[tagIndex]) {
+        // append text to the current tag
+        information[tagIndex].push(line);
+      } else {
+        // doc without tag, or text above the first tag
+        information[++tagIndex] = ['info', line];
+      }
+    }
+  }
+
+  // remove empty lines at the end of a tag
+  for (const tag of information) {
+    while (tag[tag.length - 1] === '') {
+      tag.length -= 1;
+    }
+  }
+
+  return information;
 }
 
 function formatFunctionDeclaration(declaration: ExportedDeclarations) {
@@ -237,4 +294,5 @@ interface Output {
   api: string;
   kind: string;
   signatures: string[];
+  information: string[][];
 }
