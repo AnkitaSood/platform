@@ -1,12 +1,12 @@
 import { writeFileSync } from 'fs';
 import {
   Project,
-  TypeGuards,
   ExportedDeclarations,
   MethodDeclaration,
   SourceFile,
+  Node,
 } from 'ts-morph';
-import { format, resolveConfig } from 'prettier';
+import { format, resolveConfig, Options as PrettierOptions } from 'prettier';
 
 const signatures = {
   ClassDeclaration: formatClassDeclaration,
@@ -26,7 +26,8 @@ function generateApi() {
   const output = files
     .map(generateApiForFile)
     .reduce((acc, file) => acc.concat(file), []);
-  writeApi(output);
+  const formattedOutput = prettier(JSON.stringify(output), 'json');
+  writeFileSync('./output.json', formattedOutput, 'utf-8');
 }
 
 function getBarrelFiles() {
@@ -41,7 +42,11 @@ function generateApiForFile(sourceFile: SourceFile) {
   const exportDeclarations = sourceFile.getExportedDeclarations();
 
   const fileOutput: Output[] = [];
-  for (const [key, declarations] of exportDeclarations) {
+  const entries = exportDeclarations.entries();
+  let entry: IteratorResult<[string, ExportedDeclarations[]]>;
+  while ((entry = entries.next())) {
+    if (entry.done) break;
+    const [key, declarations] = entry.value;
     fileOutput.push({
       module,
       api: key,
@@ -51,8 +56,13 @@ function generateApiForFile(sourceFile: SourceFile) {
       signatures: declarations.map((d) => {
         const formatter =
           signatures[d.getKindName()] ||
-          ((declaration) => declaration.getText());
-        return formatter(d);
+          ((declaration) => getText(declaration));
+        const signature = formatter(d);
+        // a FunctionDeclaration isn't valid
+        if (d.getKindName() === 'FunctionDeclaration') {
+          return signature;
+        }
+        return prettier(signature, 'typescript');
       }),
       information: getInformation(declarations[0]),
     });
@@ -61,25 +71,28 @@ function generateApiForFile(sourceFile: SourceFile) {
   return fileOutput;
 }
 
-function writeApi(output: Output[]) {
-  const code = JSON.stringify(output);
+/**
+ * Use prettier to format code, will throw if code isn't correct
+ */
+function prettier(
+  code: string,
+  parser: PrettierOptions['parser'] = 'typescript'
+) {
   const prettierConfig = resolveConfig.sync(__dirname);
-
-  const apiOutput = format(code, {
-    parser: 'json',
+  const prettyfied = format(code, {
+    parser,
     ...prettierConfig,
   });
-  writeFileSync('./output.json', apiOutput, 'utf-8');
+  return prettyfied;
 }
 
 function getInformation(declaration: ExportedDeclarations) {
   if (
-    declaration !== undefined &&
-    !TypeGuards.isFunctionDeclaration(declaration) &&
-    !TypeGuards.isInterfaceDeclaration(declaration) &&
-    !TypeGuards.isEnumDeclaration(declaration) &&
-    !TypeGuards.isTypeAliasDeclaration(declaration) &&
-    !TypeGuards.isClassDeclaration(declaration)
+    !Node.isFunctionDeclaration(declaration) &&
+    !Node.isInterfaceDeclaration(declaration) &&
+    !Node.isEnumDeclaration(declaration) &&
+    !Node.isTypeAliasDeclaration(declaration) &&
+    !Node.isClassDeclaration(declaration)
   ) {
     return [];
   }
@@ -91,7 +104,7 @@ function getInformation(declaration: ExportedDeclarations) {
   // manually parse the jsDoc tags
   // ts-morph doesn't handle multi line tag text?
   for (const doc of docs) {
-    const text = doc.getText();
+    const text = getText(doc);
     const lines = text
       .split('\n')
       // remove the first line /**
@@ -129,7 +142,7 @@ function getInformation(declaration: ExportedDeclarations) {
 }
 
 function formatFunctionDeclaration(declaration: ExportedDeclarations) {
-  if (!TypeGuards.isFunctionDeclaration(declaration)) {
+  if (!Node.isFunctionDeclaration(declaration)) {
     throw Error('Declaration is not a function');
   }
 
@@ -138,12 +151,12 @@ function formatFunctionDeclaration(declaration: ExportedDeclarations) {
   // another option would be to generate the signature
   // this would allow us to add links to other API docs?
   declaration.removeBody();
-  const signature = declaration.getText().replace('export function', '');
+  const signature = getText(declaration).replace('export function', '');
   return removeDoubleSpacesAndLineBreaks(signature).trim();
 }
 
 function formatClassDeclaration(declaration: ExportedDeclarations) {
-  if (!TypeGuards.isClassDeclaration(declaration)) {
+  if (!Node.isClassDeclaration(declaration)) {
     throw Error('Declaration is not a class');
   }
 
@@ -152,23 +165,29 @@ function formatClassDeclaration(declaration: ExportedDeclarations) {
 
   const typesText = declaration
     .getTypeParameters()
-    .map((p) => removeDoubleSpacesAndLineBreaks(p.getText()))
+    .map((p) => removeDoubleSpacesAndLineBreaks(getText(p)))
     .join(', ');
 
   const extendsText = removeDoubleSpacesAndLineBreaks(
-    declaration.getExtends()?.getText() ?? ''
+    getText(declaration.getExtends())
   );
 
   const implementsText = declaration
     .getImplements()
-    .map((impl) => removeDoubleSpacesAndLineBreaks(impl.getText()))
+    .map((impl) => removeDoubleSpacesAndLineBreaks(getText(impl)))
     .join(', ');
+
+  const propertiesText = declaration
+    .getProperties()
+    .filter((p) => p.getScope() === 'public')
+    .map((p) => getText(p))
+    .join('\n');
 
   const methodsText = declaration
     .getMethods()
     .map(formatMethodText)
     .filter(Boolean)
-    .join('\r\n');
+    .join('\n');
 
   // concat class parts to build the signature
   let signature = `class ${classNameText}`;
@@ -185,8 +204,17 @@ function formatClassDeclaration(declaration: ExportedDeclarations) {
     signature += ` implements ${implementsText}`;
   }
 
-  if (methodsText) {
-    signature += ` {\r\n${methodsText}\r\n}`;
+  if (methodsText || propertiesText) {
+    signature += ` {`;
+
+    if (propertiesText) {
+      signature += `\n${propertiesText}\n`;
+    }
+
+    if (methodsText) {
+      signature += `\n${methodsText}\n`;
+    }
+    signature += '\n}';
   } else {
     signature += ' { }';
   }
@@ -198,43 +226,46 @@ function formatClassDeclaration(declaration: ExportedDeclarations) {
     if (method.getScope() !== 'public') return;
 
     // here again, we could build the signature ourselves
-    // removing the body is simpler for now
+    // removing the body and the inline comments is simpler for now
     method.removeBody();
-    return method.getText();
+    return getText(method);
   }
 }
 
 function formatVariableDeclaration(declaration: ExportedDeclarations) {
-  if (!TypeGuards.isVariableDeclaration(declaration)) {
+  if (!Node.isVariableDeclaration(declaration)) {
     throw Error('Declaration is not a variable');
   }
 
   const nameText = declaration.getName();
-  const typeText = declaration.getType().getText(declaration);
+  const typeText = declaration
+    .getType()
+    .getText(declaration)
+    .replace('\r\n', '\n');
 
   return `const ${nameText}: ${typeText}`;
 }
 
 function formatTypeAliasDeclaration(declaration: ExportedDeclarations) {
-  if (!TypeGuards.isTypeAliasDeclaration(declaration)) {
+  if (!Node.isTypeAliasDeclaration(declaration)) {
     throw Error('Declaration is not a type alias');
   }
 
-  return declaration.getText().replace('export', '').trim();
+  return getText(declaration).replace('export', '').trim();
 }
 
 function formatEnumDeclaration(declaration: ExportedDeclarations) {
-  if (!TypeGuards.isEnumDeclaration(declaration)) {
+  if (!Node.isEnumDeclaration(declaration)) {
     throw Error('Declaration is not an enum');
   }
 
   // keep enum as is
   // this also adds the comments, do we want this?
-  return declaration.getText();
+  return getText(declaration);
 }
 
 function formatInterfaceDeclaration(declaration: ExportedDeclarations) {
-  if (!TypeGuards.isInterfaceDeclaration(declaration)) {
+  if (!Node.isInterfaceDeclaration(declaration)) {
     throw Error('Declaration is not an interface');
   }
 
@@ -242,24 +273,24 @@ function formatInterfaceDeclaration(declaration: ExportedDeclarations) {
 
   const typesText = declaration
     .getTypeParameters()
-    .map((p) => removeDoubleSpacesAndLineBreaks(p.getText()))
+    .map((p) => removeDoubleSpacesAndLineBreaks(getText(p)))
     .join(', ');
 
   const ownPropertiesText = declaration
     .getProperties()
-    .map((p) => removeDoubleSpacesAndLineBreaks(p.getText()));
+    .map((p) => removeDoubleSpacesAndLineBreaks(getText(p)));
 
   // should this be recursive?
   const extendedPropertiesText = declaration
     .getBaseDeclarations()
     .map((b) =>
-      TypeGuards.isInterfaceDeclaration(b)
+      Node.isInterfaceDeclaration(b)
         ? [
             ``,
             `// inherited from ${b.getName()}`,
             ...b
               .getProperties()
-              .map((p) => removeDoubleSpacesAndLineBreaks(p.getText())),
+              .map((p) => removeDoubleSpacesAndLineBreaks(getText(p))),
           ]
         : []
     )
@@ -267,7 +298,7 @@ function formatInterfaceDeclaration(declaration: ExportedDeclarations) {
 
   const propertiesText = ownPropertiesText
     .concat(extendedPropertiesText)
-    .join('\r\n');
+    .join('\n');
 
   // concat interface parts to build the signature
   let signature = `interface ${interfaceNameText}`;
@@ -277,7 +308,7 @@ function formatInterfaceDeclaration(declaration: ExportedDeclarations) {
   }
 
   if (propertiesText) {
-    signature += ` {\r\n${propertiesText}\r\n}`;
+    signature += ` {\n${propertiesText}\n}`;
   } else {
     signature += ' {}';
   }
@@ -287,6 +318,21 @@ function formatInterfaceDeclaration(declaration: ExportedDeclarations) {
 
 function removeDoubleSpacesAndLineBreaks(text: string, replacer = ' ') {
   return text.replace(/\s\s+/g, replacer);
+}
+
+function getText(node: Node) {
+  return (
+    node
+      ?.getText()
+      .replace(/\r\n/g, '\n')
+      .split('\n')
+      .filter((p) => !p.trimLeft().startsWith('//'))
+      .map((p) => {
+        const comment = p.indexOf('//');
+        return comment === -1 ? p : p.substr(0, comment);
+      })
+      .join('\n') ?? ''
+  );
 }
 
 interface Output {
